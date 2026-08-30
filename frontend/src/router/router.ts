@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainPage from '../components/MainPage.vue'
-import Menu from '../components/Menu.vue'
-import NewMenu from '../components/NewMenu.vue'
-import Cart from '../components/Cart.vue'
+import MainPage from '../components/pages/main_page/MainPage.vue'
+import Menu from '../components/pages/menu_page/Menu.vue'
+import NewMenu from '../components/pages/new_menu_page/NewMenu.vue'
+import Cart from '../components/pages/cart_page/Cart.vue'
 
 const routes = [
      {
@@ -21,7 +21,7 @@ const routes = [
     component: NewMenu
   },
 {
-    path: '/cart',
+    path: '/stores',
     name: 'cart',
     component: Cart
   }]

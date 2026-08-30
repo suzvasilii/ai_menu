@@ -615,9 +615,9 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 DIMENSION = 384
 translator = Translator()
 
-def translate_text(text):
+def translate_text(text, dest='en'):
     try:
-        result = translator.translate(text, dest='en')
+        result = translator.translate(text, dest=dest)
         return result.text
     except Exception as e:
         print(f"Translation error: {e}")
