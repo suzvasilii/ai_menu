@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
-from services.auth_service import BasketService
+from services.basket_service import BasketService
 from utils.instances import get_basket_service
-
-from db.schemas import BasketAdd
+from schemas.basket import BasketAdd
 
 router = APIRouter(prefix="/basket", tags=["auth"])
 

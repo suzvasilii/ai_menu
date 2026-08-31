@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from db.models import Basket, BasketItem
 
-from db.schemas import BasketAdd
+from schemas.basket import BasketAdd
 
 class BasketRepository:
     def __init__(self, db: Session):

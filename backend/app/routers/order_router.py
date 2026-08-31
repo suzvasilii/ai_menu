@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from db.schemas import OrderCreate
+from schemas.order import OrderCreate
 from services.order_service import OrderService
 from utils.instances import get_order_service
 

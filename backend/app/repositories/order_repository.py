@@ -1,5 +1,5 @@
 from db.models import Order
-from db.schemas import OrderCreate
+from schemas.order import OrderCreate
 
 class OrderRepository:
     def __init__(self, db):

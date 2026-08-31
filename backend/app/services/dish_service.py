@@ -3,7 +3,7 @@ from PIL import Image
 import io
 
 from api.responses import returnBadrequestError
-from db.schemas import DishCreate, DishResponse
+from schemas.dish import DishCreate, DishResponse
 from repositories.dish_repository import DishRepository
 from ai.cnn.cnn import predict_by_image
 from ai.semantic.vector_search import translate_text, find_best_api_query

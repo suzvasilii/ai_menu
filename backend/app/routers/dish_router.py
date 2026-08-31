@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, File
-from db.schemas import DishCreate, DishResponse
+from schemas.dish import DishCreate, DishResponse
 from services.dish_service import DishService
 from utils.instances import get_dish_service
 

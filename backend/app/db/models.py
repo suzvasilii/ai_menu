@@ -12,6 +12,7 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     login = Column(String, unique=True, nullable=False)
+    chat_id = Column(Integer, unique=True, nullable=False)
 
     orders = relationship("Order", back_populates="user")
     basket = relationship("Basket", back_populates="user")

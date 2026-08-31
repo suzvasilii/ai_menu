@@ -1,6 +1,6 @@
 from collections import Counter
 
-from db.schemas import OrderCreate
+from schemas.order import OrderCreate
 from repositories.order_repository import OrderRepository
 from db.models import Order
 from utils.decorators import service_handle_errors

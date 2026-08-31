@@ -1,6 +1,6 @@
 from repositories.basket_repository import BasketRepository
 
-from db.schemas import BasketAdd
+from schemas.basket import BasketAdd
 
 from utils.decorators import service_handle_errors
 
