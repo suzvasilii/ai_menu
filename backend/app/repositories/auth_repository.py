@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from utils.jwt import generate_one_time_token
 from sqlalchemy.orm import Session
 from db.models import User
 
@@ -5,21 +7,32 @@ class AuthRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def reg(self, login: str) -> User | None:
+    def login(self, data) -> User | None:
         try:
-            is_user_exists = self.db.query(User).filter(User.login == login).first()
-            if is_user_exists:
-                return None
-            new_user = User(login=login)
-            self.db.add(new_user)
+            user = self.db.query(User).filter(User.username == data.username).first()
+            if not user:
+                user = User(username=data.username, chat_id=data.chat_id)
+                self.db.add(user)
+                self.db.commit()
+                self.db.refresh(user)
+            token = generate_one_time_token(user.username)
+            user.one_time_token = token
+            user.token_expires = datetime.now() + timedelta(minutes=10)
             self.db.commit()
-            self.db.refresh(new_user)
-            return new_user
+            return user
         except Exception as e:
             raise RuntimeError(f"Database error, reg unsuccessfully: {e}")
 
-    def login(self, login:str)->User | None:
+    def verify(self, data) -> User | None:
         try:
-            return self.db.query(User).filter(User.login == login).first()
+            user = self.db.query(User).filter(
+                User.one_time_token == data.token,
+                        User.username == data.username
+                    ).first()
+            if user:
+                user.one_time_token =None
+                user.token_expires = None
+                self.db.commit()
+            return user
         except Exception as e:
-            raise RuntimeError(f"Database error, login unsuccessfully: {e}")
+            raise RuntimeError(f"Database error, verify unsuccessfully: {e}")

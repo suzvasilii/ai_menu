@@ -1,7 +1,8 @@
 from fastapi import HTTPException
+from datetime import datetime, timedelta
 from repositories.auth_repository import AuthRepository
 from utils.decorators import service_handle_errors
-from schemas.auth import AuthResponse
+from utils.jwt import create_access_token
 
 class AuthService:
 
@@ -9,15 +10,19 @@ class AuthService:
         self.repo = repo
 
     @service_handle_errors()
-    def reg(self, login: str):
-        user = self.repo.reg(login)
+    def login(self, data):
+        user = self.repo.login(data)
         if user:
-            return AuthResponse(id=user.id, login=user.login)
-        raise HTTPException(status_code=409, detail="User already exists.")
+            return user.one_time_token
+        raise HTTPException(409, "User already exists.")
 
     @service_handle_errors()
-    def login(self, login: str):
-        user = self.repo.login(login)
-        if user:
-            return AuthResponse(id=user.id, login=user.login)
-        raise HTTPException(status_code=401, detail="Invalid attempt to enter.")
+    def verify(self, data):
+        user = self.repo.verify(data)
+        if not user or user.token_expires < datetime.now():
+            raise HTTPException(401, "Invalid or expired token")
+        access_token = create_access_token(
+            data={"sub": user.username},
+            expires_delta=timedelta(days=40)
+        )
+        return access_token

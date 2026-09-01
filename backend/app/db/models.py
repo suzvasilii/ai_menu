@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from db.db import Base
 
@@ -13,6 +13,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     login = Column(String, unique=True, nullable=False)
     chat_id = Column(Integer, unique=True, nullable=False)
+    one_time_token = Column(String, nullable=True)
+    token_expires = Column(DateTime, nullable=True)
 
     orders = relationship("Order", back_populates="user")
     basket = relationship("Basket", back_populates="user")
