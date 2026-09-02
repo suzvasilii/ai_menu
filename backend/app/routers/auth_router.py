@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from services.auth_service import AuthService
 from utils.instances import get_auth_service
 from utils.jwt import verify_current_user
-from schemas.auth import AuthScheme, GenerateTokenResponse, GenerateTokenRequest, ExchangeTokenResponse, ExchangeTokenRequest, AuthStatus
+from schemas.auth import GenerateTokenResponse, GenerateTokenRequest, ExchangeTokenResponse, ExchangeTokenRequest, AuthStatus
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

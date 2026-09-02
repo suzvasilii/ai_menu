@@ -7,8 +7,4 @@ import {useUserStore} from "@/stores/user.ts";
 const app = createApp(App)
 app.use(router)
 app.use(createPinia())
-
-const userStore = useUserStore()
-userStore.restoreUser()
-
 app.mount('#app')

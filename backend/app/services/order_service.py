@@ -4,7 +4,6 @@ from schemas.order import OrderCreate
 from repositories.order_repository import OrderRepository
 from db.models import Order
 from utils.decorators import service_handle_errors
-from tg.bot import gen_msg_and_send
 
 class OrderService:
     def __init__(self, repo: OrderRepository):
@@ -13,8 +12,6 @@ class OrderService:
     @service_handle_errors()
     def create(self, order_data: OrderCreate):
         self.repo.create(order_data)
-        gen_msg_and_send(order_data)
-        gen_msg_and_send(order_data, toUser=True)
         return {"status":200, "detail":"order created successfully"}
 
     @service_handle_errors()

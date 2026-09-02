@@ -3,7 +3,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 import httpx
-from ..config import BACKEND_URL
+from config import BACKEND_URL
 
 router = Router()
 

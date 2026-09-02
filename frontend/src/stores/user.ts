@@ -1,45 +1,61 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-
-export interface UserData {
-  id: number
-  login: string
-}
+import { authApi } from '@/api/auth'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<UserData | null>(null)
+  const username = ref<string | null>(null)
+  const isAuthenticated = ref(false)
+  const isLoading = ref(false)
 
-  const isAuthenticated = computed(() => !!user.value)
-  const userLogin = computed(() => user.value?.login || '')
-  const userId = computed(() => user.value?.id || -1)
+  const userLogin = computed(() => username.value || 'Guest')
+  const hasToken = computed(() => !!localStorage.getItem('access_token'))
 
-  function setUser(data: UserData) {
-    user.value = data
-    localStorage.setItem('user', JSON.stringify(data))
-  }
+  const checkAuth = async () => {
+    isLoading.value = true
 
-  function clearUser() {
-    user.value = null
-    localStorage.removeItem('user')
-  }
-
-  function restoreUser() {
-    const stored = localStorage.getItem('user')
-    if (stored) {
-      try {
-        user.value = JSON.parse(stored)
-      } catch (e) {
-        clearUser()
-      }
+    const token = localStorage.getItem('access_token')
+    if (!token) {
+      isAuthenticated.value = false
+      isLoading.value = false
+      return
     }
+    try {
+      const response = await authApi.verifyUser()
+      username.value = response.data.username
+      isAuthenticated.value = true
+    } catch (error) {
+      localStorage.removeItem('access_token')
+      isAuthenticated.value = false
+      username.value = null
+    } finally {
+      isLoading.value = false
+    }
+  }
+  const setToken = (token: string) => {
+    localStorage.setItem('access_token', token)
+    isAuthenticated.value = true
+  }
+
+  const logout = () => {
+    localStorage.removeItem('access_token')
+    isAuthenticated.value = false
+    username.value = null
+    window.location.href = '/'
+  }
+
+  const setUsername = (name: string) => {
+    username.value = name
   }
 
   return {
+    username,
     isAuthenticated,
+    isLoading,
     userLogin,
-    userId,
-    setUser,
-    restoreUser,
-    clearUser,
+    hasToken,
+    checkAuth,
+    setToken,
+    setUsername,
+    logout,
   }
 })

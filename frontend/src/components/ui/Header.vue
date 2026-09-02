@@ -19,13 +19,21 @@
           </span>
         </router-link>
         </nav>
+       <div>
+        Hi, {{ userStore.userLogin }}
+        <button @click="userStore.logout">Выйти</button>
+  </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useCartStore } from '@/stores/cart.ts'
+import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const cartStore = useCartStore()
 
 interface NavLink {
   name: string
@@ -34,17 +42,11 @@ interface NavLink {
 
 const logoText: string = "Домашняя кухня"
 
-const handleClick = (linkName: string): void => {
-  console.log(``)
-}
-
 const navLinks: NavLink[] = [
   { name: 'Главная', path: '/' },
   { name: 'Заказать из меню', path: '/menu' },
   { name: 'Создать новое меню', path: '/new' }
 ]
-
-const cartStore = useCartStore()
 </script>
 <style scoped>
 
