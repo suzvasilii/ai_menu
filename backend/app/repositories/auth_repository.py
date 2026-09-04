@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from utils.jwt import generate_one_time_token
+from utils.jwt import generate_one_time_token, decode_access_token
 from sqlalchemy.orm import Session
 from db.models import User
 
@@ -25,9 +25,11 @@ class AuthRepository:
 
     def verify(self, data) -> User | None:
         try:
+            payload = decode_access_token(data.token)
+            username = payload.get("sub")
             user = self.db.query(User).filter(
                 User.one_time_token == data.token,
-                        User.username == data.username
+                        User.username == username
                     ).first()
             if user:
                 user.one_time_token =None
