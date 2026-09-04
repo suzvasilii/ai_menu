@@ -11,7 +11,7 @@ class Dish(Base):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    login = Column(String, unique=True, nullable=False)
+    useername = Column(String, unique=True, nullable=False)
     chat_id = Column(Integer, unique=True, nullable=False)
     one_time_token = Column(String, nullable=True)
     token_expires = Column(DateTime, nullable=True)
