@@ -1,0 +1,68 @@
+version: '3.8'
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    networks:
+      internal:
+        ipv4_address: 172.16.0.5
+    environment:
+      - FRONTEND_URL=http://172.16.0.3:5173
+      - TG_BOT_URL=http://172.16.0.4
+      - DATABASE_URL=postgresql://postgres:postgres@172.16.0.2:5432/postgres
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    networks:
+      internal:
+        ipv4_address: 172.16.0.3
+    environment:
+      - VITE_BACKEND_URL=http://172.16.0.5:8000
+    ports:
+      - "5173:5173"
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: tg_bot
+    restart: unless-stopped
+    networks:
+      internal:
+        ipv4_address: 172.16.0.4
+    environment:
+      - BACKEND_URL=http://172.16.0.5:8000
+
+  db:
+    image: postgres:15-alpine
+    container_name: db
+    restart: unless-stopped
+    networks:
+      internal:
+        ipv4_address: 172.16.0.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -7,9 +9,12 @@ from utils.instances import init_db_instance
 from routers import auth_router, dish_router, order_router, basket_router
 app = FastAPI(title="Dishes API")
 
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+TG_BOT_URL = os.getenv("TG_BOT_URL")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://172.16.1.3:5173", "http://172.16.1.4"],
+    allow_origins=[FRONTEND_URL, TG_BOT_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
