@@ -16,6 +16,6 @@ def verify_token(data: ExchangeTokenRequest, service: AuthService = Depends(get_
     access_token = service.verify(data)
     return ExchangeTokenResponse(access_token=access_token)
 
-@router.post("/verify_user", response_model=AuthStatus)
+@router.get("/verify_user", response_model=AuthStatus)
 def verify_user(current_user: str = Depends(verify_current_user)):
     return AuthStatus(status=200, username=current_user)
