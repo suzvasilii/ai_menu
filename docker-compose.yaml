@@ -1,12 +1,5 @@
 version: '3.8'
 
-networks:
-  internal:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.16.0.0/16
-
 services:
   backend:
     build:
@@ -14,12 +7,9 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     restart: unless-stopped
-    networks:
-      internal:
-        ipv4_address: 172.16.0.5
     environment:
       - FRONTEND_URL=http://happsrv.mooo.com:5173
-      - DATABASE_URL=postgresql://postgres:postgres@172.16.0.2:5432/postgres
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     ports:
       - "8000:8000"
     depends_on:
@@ -31,9 +21,6 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     restart: unless-stopped
-    networks:
-      internal:
-        ipv4_address: 172.16.0.3
     environment:
       - VITE_BACKEND_URL=http://happsrv.mooo.com:8000
     ports:
@@ -45,19 +32,13 @@ services:
       dockerfile: Dockerfile
     container_name: tg_bot
     restart: unless-stopped
-    networks:
-      internal:
-        ipv4_address: 172.16.0.4
     environment:
-      - BACKEND_URL=http://172.16.0.5:8000
+      - BACKEND_URL=http://backend:8000
 
   db:
     image: postgres:15-alpine
     container_name: db
     restart: unless-stopped
-    networks:
-      internal:
-        ipv4_address: 172.16.0.2
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
