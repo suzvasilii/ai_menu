@@ -7,7 +7,7 @@ from config import BACKEND_URL
 
 router = Router()
 
-@router.message(Command("start"))
+@router.message(Command("token"))
 async def start_command(message: Message):
     username = message.from_user.username
     chat_id = message.chat.id
@@ -19,7 +19,7 @@ async def start_command(message: Message):
         )
     data = response.json()
     token = data.get("token")
-    site_url = os.getenv("SITE_URL", "http://localhost:5173")
+    site_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
     link = f"{site_url}?token={token}"
 
-    await message.answer(f"🔗SITE:\n{link}")
+    await message.answer(link)

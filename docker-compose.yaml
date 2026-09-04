@@ -34,6 +34,7 @@ services:
     restart: unless-stopped
     environment:
       - BACKEND_URL=http://backend:8000
+      - FRONTEND_URL=http://happsrv.mooo.com:5173
 
   db:
     image: postgres:15-alpine
