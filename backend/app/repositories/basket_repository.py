@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models import Basket, BasketItem
+from backend.app.db import Basket, BasketItem
 
 from schemas.basket import BasketAdd
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from utils.jwt import generate_one_time_token
 from sqlalchemy.orm import Session
-from db.models import User
+from backend.app.db import User
 
 class AuthRepository:
     def __init__(self, db: Session):

@@ -1,7 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from db.db import get_db, engine, Base
+from backend.app.db import get_db, engine, Base
 
 from services.auth_service import AuthService
 from services.basket_service import BasketService

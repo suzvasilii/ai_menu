@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models import Dish
+from backend.app.db import Dish
 
 class DishRepository:
     def __init__(self, db: Session):

@@ -2,7 +2,7 @@ from collections import Counter
 
 from schemas.order import OrderCreate
 from repositories.order_repository import OrderRepository
-from db.models import Order
+from backend.app.db import Order
 from utils.decorators import service_handle_errors
 
 class OrderService:

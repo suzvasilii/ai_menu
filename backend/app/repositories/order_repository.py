@@ -1,4 +1,4 @@
-from db.models import Order
+from backend.app.db import Order
 from schemas.order import OrderCreate
 
 class OrderRepository:

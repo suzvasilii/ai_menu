@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from db.db import Base
+from backend.app.db.db import Base
 
 class Dish(Base):
     __tablename__ = "dishes"

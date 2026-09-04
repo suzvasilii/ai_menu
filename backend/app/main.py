@@ -9,7 +9,7 @@ app = FastAPI(title="Dishes API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://172.16.1.3:5173", "http://172.16.1.4"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
