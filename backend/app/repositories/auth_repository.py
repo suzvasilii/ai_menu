@@ -31,10 +31,12 @@ class AuthRepository:
                 User.one_time_token == data.token,
                         User.username == username
                     ).first()
-            if user:
-                user.one_time_token =None
-                user.token_expires = None
-                self.db.commit()
             return user
         except Exception as e:
             raise RuntimeError(f"Database error, verify unsuccessfully: {e}")
+
+    def clear_temp_token(self, user: User) -> User | None:
+        user.one_time_token = None
+        user.token_expires = None
+        self.db.commit()
+        self.db.refresh(user)
