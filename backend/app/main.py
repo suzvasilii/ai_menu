@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from utils.instances import init_db_instance
 
-from routers import auth_router, dish_router, order_router, basket_router
+from routers import auth_router, dish_router, order_router, basket_router, ai_router
 app = FastAPI(title="Dishes API")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
@@ -31,6 +31,7 @@ app.include_router(auth_router.router)
 app.include_router(basket_router.router)
 app.include_router(dish_router.router)
 app.include_router(order_router.router)
+app.include_router(ai_router.router)
 
 
 

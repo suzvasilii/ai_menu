@@ -7,6 +7,7 @@ from services.auth_service import AuthService
 from services.basket_service import BasketService
 from services.dish_service import DishService
 from services.order_service import OrderService
+from services.ai_service import AI_Service
 
 from repositories.auth_repository import AuthRepository
 from repositories.basket_repository import BasketRepository
@@ -31,3 +32,6 @@ def get_dish_service(db: Session = Depends(get_db)):
 def get_order_service(db: Session = Depends(get_db)):
     repo = OrderRepository(db)
     return OrderService(repo)
+
+def get_ai_service():
+    return AI_Service()

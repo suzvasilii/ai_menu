@@ -3,7 +3,7 @@ from schemas.dish import DishCreate, DishResponse
 from services.dish_service import DishService
 from utils.instances import get_dish_service
 
-router = APIRouter(prefix="/dish", tags=["dishes"])
+router = APIRouter(prefix="/dish", tags=["dish"])
 
 @router.post("/create_by_name")
 def create_dish(dish: DishCreate, service: DishService = Depends(get_dish_service)):

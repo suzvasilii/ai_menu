@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+gigachat
+python-dotenv
+torch
+torchvision
+faiss-cpu
+numpy
