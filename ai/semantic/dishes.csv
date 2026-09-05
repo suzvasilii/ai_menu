@@ -1,0 +1,27 @@
+name,category
+apple pie,desert
+cheesecake,desert
+chocolate cake,desert
+ice cream,desert
+pancakes,desert
+borsch,soup
+chicken noodle soup,soup
+mushroom soup,soup
+tomato soup,soup
+steak,main_dish
+grilled chicken,main_dish
+pasta carbonara,main_dish
+lasagna,main_dish
+fried rice,main_dish
+margherita,pizza
+pepperoni,pizza
+hawaiian pizza,pizza
+california roll,roll
+philadelphia roll,roll
+spicy tuna roll,roll
+soda,cold_drink
+juice,cold_drink
+ice tea,cold_drink
+coffee,hot_drink
+tea,hot_drink
+hot chocolate,hot_drink

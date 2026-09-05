@@ -6,6 +6,7 @@ import torchvision.transforms as transforms
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 NUM_CLASSES = 11
+NUM_PIZZA_SUBCLASSES = 5
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(CURRENT_DIR, "best_food11_model.pth")
 CLASS_NAMES = ["apple_pie", "cheesecake", "chicken_curry", "french_fries", "fried_rice", "hamburger", "hot_dog", "ice_cream", "omelette", "pizza", "sushi"]

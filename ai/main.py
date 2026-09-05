@@ -1,18 +1,31 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, UploadFile, File
 from dotenv import load_dotenv
 
-from services.ai_service import AI_Serivce
-from schemas import PromptRequest, PromptResponse
-
+from schemas import ClassifiedResponse
+from service import AI_Serivce
+from semantic.vector_search import TextClassifier
 load_dotenv()
 app = FastAPI(title="AI Assistant")
 
-def get_ai_service():
-    return AI_Serivce()
+classifier = TextClassifier()
 
-@app.post("/ask_officiant", response_model=PromptResponse)
-def ask_officiant(request: PromptRequest, service: AI_Serivce = Depends(get_ai_service)):
-    return service.ask_officiant(request)
+def get_ai_service():
+    return AI_Serivce(classifier)
+
+@app.get("/ask_officiant/{query}")
+def ask_officiant(query: str, service: AI_Serivce = Depends(get_ai_service)):
+    return service.ask_officiant(query)
+
+@app.get("/get_description/{dish_name}", response_model = ClassifiedResponse)
+def get_description(dish_name: str, service: AI_Serivce = Depends(get_ai_service)):
+    return service.get_description(dish_name)
+
+@app.post("/classify_photo", response_model = ClassifiedResponse)
+def classify_photo(
+    file: UploadFile = File(...),
+    service: AI_Serivce = Depends(get_ai_service)
+):
+    return service.classify_photo(file)
 
 @app.get("/health")
 def health():
