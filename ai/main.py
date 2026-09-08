@@ -16,8 +16,8 @@ def get_ai_service():
 def ask_officiant(query: str, service: AI_Serivce = Depends(get_ai_service)):
     return service.ask_officiant(query)
 
-@app.get("/get_description/{dish_name}", response_model = ClassifiedResponse)
-def get_description(dish_name: str, service: AI_Serivce = Depends(get_ai_service)):
+@app.get("/get_dish_name_by_str/{dish_name}", response_model = ClassifiedResponse)
+def get_dish_name_by_str(dish_name: str, service: AI_Serivce = Depends(get_ai_service)):
     return service.get_description(dish_name)
 
 @app.post("/classify_photo", response_model = ClassifiedResponse)

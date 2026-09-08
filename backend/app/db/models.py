@@ -7,6 +7,7 @@ class Dish(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     image_url = Column(String, nullable=True)
+    category = Column(String, nullable=False)
 
 class User(Base):
     __tablename__ = "users"

@@ -15,7 +15,7 @@ class DishService:
         self.repo = repo
 
     @service_handle_errors(status_code=500)
-    def create(self, dish: DishCreate, isSemantic=True):
+    def create_by_name(self, dish: DishCreate, isSemantic=True):
         return None
 
     @service_handle_errors(status_code=501)

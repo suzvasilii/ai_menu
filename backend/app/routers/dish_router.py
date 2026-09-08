@@ -7,7 +7,7 @@ router = APIRouter(prefix="/dish", tags=["dish"])
 
 @router.post("/create_by_name")
 def create_dish(dish: DishCreate, service: DishService = Depends(get_dish_service)):
-    return service.create(dish)
+    return service.create_by_name(dish)
 
 @router.post("/create_by_photo")
 def create_dish_by_photo(file: UploadFile = File(...), service: DishService = Depends(get_dish_service)):
