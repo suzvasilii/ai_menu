@@ -1,40 +1,46 @@
 import os
 import httpx
+from dotenv import load_dotenv
 from utils.decorators import service_handle_errors
 from utils.saver import find_images
-from schemas.ai import AssistantRequest, AssistantResponse, ImagesResponse
+from schemas.ai import ImagesResponse, ClassifyResponse
+
+load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
+
+print(AI_API_URL)
 
 class AI_Service:
 
     @service_handle_errors()
     def ask_officiant(self, query):
         with httpx.Client() as client:
-            response = client.post(
-                f"http://{AI_API_URL}/ask_officiant",
-                params={"query": query}
-            )
-            return AssistantRequest(response=response)
+            response = client.get(f"{AI_API_URL}/ask_officiant/{query}")
+            response.raise_for_status()
+            data = response.json()
+            answer = data["answer"]
+            return {"answer":answer}
 
     @service_handle_errors()
     def get_dish_name_by_str(self, dish_name):
         with httpx.Client() as client:
-            response = client.post(
-                f"http://{AI_API_URL}/get_dish_name_by_str",
-                params={"dish_name": dish_name}
-            )
-            llm_dish_name, category = response["dish_name"], response["category"]
+            response = client.get(f"{AI_API_URL}/get_dish_name_by_str/{dish_name}")
+            response.raise_for_status()
+            data = response.json()
+            llm_dish_name, category = data["dish_name"], data["category"]
             images = find_images(llm_dish_name)
-            return ImagesResponse(images=images, category=category)
+            return ImagesResponse(images=images, dish_name= dish_name, category=category)
 
     @service_handle_errors()
     def classify_by_photo(self, photo):
+        photo.file.seek(0)
+        photo_bytes = photo.file.read()
         with httpx.Client() as client:
             response = client.post(
-                f"http://{AI_API_URL}/classify_photo",
-                files={"photo": photo}
+                f"{AI_API_URL}/classify_photo",
+                files={"photo": (photo.filename, photo_bytes, photo.content_type)}
             )
-            dish_name, category = response["dish_name"], response["category"]
-
-            return AssistantRequest(response=response)
+            response.raise_for_status()
+            data = response.json()
+            return ClassifyResponse(dish_name=data["dish_name"], category=data["category"])

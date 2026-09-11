@@ -3,8 +3,11 @@ import faiss
 from sentence_transformers import SentenceTransformer
 import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_DEFAULT = os.path.join(BASE_DIR, "dishes.csv")
+
 class TextClassifier:
-    def __init__(self, csv_path: str = "dishes.csv", model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, csv_path: str = CSV_DEFAULT, model_name: str = "all-MiniLM-L6-v2"):
         self.csv_path = csv_path
         self.model_name = model_name
         self.embedder = None
@@ -18,6 +21,7 @@ class TextClassifier:
 
     def _load_data(self):
         if not os.path.exists(self.csv_path):
+            print("Unable to open the file!")
             return
         df = pd.read_csv(self.csv_path)
         self.names = df["name"].tolist()

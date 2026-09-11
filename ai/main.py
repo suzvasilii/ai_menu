@@ -22,10 +22,10 @@ def get_dish_name_by_str(dish_name: str, service: AI_Serivce = Depends(get_ai_se
 
 @app.post("/classify_photo", response_model = ClassifiedResponse)
 def classify_photo(
-    file: UploadFile = File(...),
+    photo: UploadFile = File(...),
     service: AI_Serivce = Depends(get_ai_service)
 ):
-    return service.classify_photo(file)
+    return service.classify_photo(photo)
 
 @app.get("/health")
 def health():

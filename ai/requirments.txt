@@ -6,3 +6,5 @@ torch
 torchvision
 faiss-cpu
 numpy
+pandas
+sentence_transformers

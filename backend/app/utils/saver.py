@@ -19,6 +19,7 @@ os.makedirs(UPLOADS_DIR, exist_ok=True)
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
 UNSPLASH_URL = "https://api.unsplash.com/search/photos"
 
+print(UNSPLASH_ACCESS_KEY)
 @saver_handle_errors
 def find_images(name: str) -> list[str] | None:
     with httpx.Client() as client:

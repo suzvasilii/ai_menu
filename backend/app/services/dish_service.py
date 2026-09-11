@@ -6,7 +6,7 @@ from api.responses import returnBadrequestError
 from schemas.dish import DishCreate, DishResponse
 from repositories.dish_repository import DishRepository
 
-from utils.saver import save_classified_image, find_and_save_image
+from utils.saver import save_classified_image, find_images
 from utils.decorators import service_handle_errors
 
 class DishService:
