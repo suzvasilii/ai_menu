@@ -20,6 +20,10 @@ def ask_officiant(query: str, service: AI_Serivce = Depends(get_ai_service)):
 def get_dish_name_by_str(dish_name: str, service: AI_Serivce = Depends(get_ai_service)):
     return service.get_description(dish_name)
 
+@app.get("/retry/{dish_name}", response_model=ClassifiedResponse)
+def retry_get_dish_name_by_str(dish_name: str, prev_attempts: list[str], service: AI_Serivce = Depends(get_ai_service)):
+    return service.retry_get_description(dish_name, prev_attempts)
+
 @app.post("/classify_photo", response_model = ClassifiedResponse)
 def classify_photo(
     photo: UploadFile = File(...),
