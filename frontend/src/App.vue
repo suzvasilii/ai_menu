@@ -3,19 +3,32 @@
     <template v-if="userStore.isAuthenticated">
       <Header />
       <router-view />
-      </template>
+    </template>
     <AuthModal v-else />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useUserStore } from './stores/user'
+import { useCartStore } from './stores/cart'
 import { authApi } from './api/auth'
 import AuthModal from './components/forms/AuthForm.vue'
 import Header from './components/ui/Header.vue'
 
 const userStore = useUserStore()
+const cartStore = useCartStore()
+
+watch(
+  () => userStore.userId,
+  async (id) => {
+    if (id) {
+      await cartStore.loadFromBackend(id)
+    } else {
+      cartStore.reset()
+    }
+  }
+)
 
 onMounted(async () => {
   const params = new URLSearchParams(window.location.search)

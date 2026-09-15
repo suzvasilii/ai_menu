@@ -4,6 +4,7 @@ import { authApi } from '@/api/auth'
 
 export const useUserStore = defineStore('user', () => {
   const username = ref<string | null>(null)
+  const userId = ref<number | null>(null)
   const isAuthenticated = ref(false)
   const isLoading = ref(false)
 
@@ -19,18 +20,22 @@ export const useUserStore = defineStore('user', () => {
       isLoading.value = false
       return
     }
+
     try {
       const response = await authApi.verifyUser()
       username.value = response.data.username
+      userId.value = response.data.user_id
       isAuthenticated.value = true
     } catch (error) {
       localStorage.removeItem('access_token')
       isAuthenticated.value = false
       username.value = null
+      userId.value = null
     } finally {
       isLoading.value = false
     }
   }
+
   const setToken = (token: string) => {
     localStorage.setItem('access_token', token)
     isAuthenticated.value = true
@@ -40,6 +45,7 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('access_token')
     isAuthenticated.value = false
     username.value = null
+    userId.value = null
     window.location.href = '/'
   }
 
@@ -49,6 +55,7 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     username,
+    userId,
     isAuthenticated,
     isLoading,
     userLogin,

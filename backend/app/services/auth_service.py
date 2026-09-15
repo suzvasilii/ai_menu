@@ -23,7 +23,7 @@ class AuthService:
             raise HTTPException(401, "Invalid or expired token")
         self.repo.clear_temp_token(user)
         access_token = create_access_token(
-            data={"sub": user.username},
+            data={"sub": user.username, "user_id": user.id},
             expires_delta=timedelta(days=40)
         )
         return access_token

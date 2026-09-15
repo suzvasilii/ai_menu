@@ -16,4 +16,4 @@ class BasketService:
 
     @service_handle_errors()
     def get_all(self, user_id: int):
-        return self.repo.get(user_id)
+        return self.repo.get_all(user_id)

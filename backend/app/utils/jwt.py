@@ -34,7 +34,8 @@ def verify_current_user(credentials: HTTPAuthorizationCredentials = Depends(secu
     payload = decode_access_token(token)
     if not payload:
         raise HTTPException(401, "Invalid or expired token")
-    username = payload.get("sub")
-    return username
-
+    return {
+        "username": payload.get("sub"),
+        "user_id": payload.get("user_id"),
+    }
 

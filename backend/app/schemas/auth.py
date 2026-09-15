@@ -17,3 +17,4 @@ class ExchangeTokenResponse(BaseModel):
 class AuthStatus(BaseModel):
     status:int
     username:str
+    user_id:int

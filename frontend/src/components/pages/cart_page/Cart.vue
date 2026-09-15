@@ -10,33 +10,33 @@
     </div>
     <div v-else class="cart-content">
       <div class="cart-items">
-        <div 
-          v-for="item in cartStore.items" 
-          :key="item.id"
+        <div
+          v-for="item in cartStore.items"
+          :key="item.name"
           class="cart-item"
         >
           <img :src="item.image" :alt="item.name" class="cart-item-image" />
-          
+
           <div class="cart-item-info">
             <h3>{{ item.name }}</h3>
           </div>
-          
+
           <div class="cart-item-actions">
-            <button 
-              @click="cartStore.decreaseQuantity(item.id)" 
+            <button
+              @click="cartStore.decreaseQuantity(item.name)"
               class="qty-btn"
             >
               −
             </button>
             <span class="qty-count">{{ item.quantity }}</span>
-            <button 
-              @click="addOneMore(item)" 
+            <button
+              @click="cartStore.addToCart({ name: item.name, image: item.image })"
               class="qty-btn"
             >
               +
             </button>
-            <button 
-              @click="cartStore.removeFromCart(item.id)" 
+            <button
+              @click="cartStore.removeFromCart(item.name)"
               class="remove-btn"
             >
               ✕
@@ -77,7 +77,7 @@ import { ref } from 'vue'
 import { useCartStore } from '@/stores/cart.ts'
 import { ordersApi } from '@/api/orders.ts'
 
-import {router} from "@/router/router.ts";
+import { router } from "@/router/router.ts"
 
 const cartStore = useCartStore()
 
@@ -94,7 +94,7 @@ const addOrder = async () => {
   isLoading.value = true
 
   try {
-    const newOrder = await ordersApi.create({
+    await ordersApi.create({
       customer_name: userName.value,
       comment: comment.value,
       items: cartStore.items.map(item => ({
@@ -106,20 +106,11 @@ const addOrder = async () => {
     cartStore.clearCart()
     userName.value = ''
     router.push('/menu')
-
-  } catch (error: any) {
+  } catch (error) {
     alert("Не удалось сформировать заказ :(")
   } finally {
     isLoading.value = false
   }
-}
-
-const addOneMore = (item: { id: number; name: string;  image: string }) => {
-  cartStore.addToCart({
-    id: item.id,
-    name: item.name,
-    image: item.image
-  })
 }
 </script>
 
@@ -167,7 +158,6 @@ const addOneMore = (item: { id: number; name: string;  image: string }) => {
   background: #33a06f;
 }
 
-/* Содержимое корзины */
 .cart-content {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -264,15 +254,6 @@ const addOneMore = (item: { id: number; name: string;  image: string }) => {
   transform: scale(1.2);
 }
 
-.cart-item-total {
-  font-weight: 700;
-  color: #2c3e50;
-  min-width: 80px;
-  text-align: right;
-  font-size: 1.1rem;
-}
-
-/* Итого (сайдбар) */
 .cart-summary {
   background: #fff;
   padding: 24px;
@@ -292,13 +273,6 @@ const addOneMore = (item: { id: number; name: string;  image: string }) => {
 .cart-summary p {
   margin: 8px 0;
   color: #4a5568;
-}
-
-.total-price {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #42b883;
-  margin: 16px 0 !important;
 }
 
 .checkout-btn {
@@ -341,16 +315,15 @@ const addOneMore = (item: { id: number; name: string;  image: string }) => {
   cursor: not-allowed;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .cart-content {
     grid-template-columns: 1fr;
   }
-  
+
   .cart-item {
     flex-wrap: wrap;
   }
-  
+
   .cart-item-actions {
     margin-left: auto;
   }
