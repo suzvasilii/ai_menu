@@ -22,7 +22,7 @@ def get_dish_name_by_str(dish_name: str, service: AI_Serivce = Depends(get_ai_se
 
 @app.post("/retry", response_model=ClassifiedResponse)
 def retry_get_dish_name_by_str(request: RetryClassifyRequest, service: AI_Serivce = Depends(get_ai_service)):
-    return service.retry_get_description(dish_name, prev_attempts)
+    return service.retry_get_description(request.dish_name, request.attempts)
 
 @app.post("/classify_photo", response_model = ClassifiedResponse)
 def classify_photo(

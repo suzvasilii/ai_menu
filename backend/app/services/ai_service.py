@@ -23,9 +23,20 @@ class AI_Service:
             return {"answer":answer}
 
     @service_handle_errors()
-    def get_dish_name_by_str(self, dish_name):
+    def get_dish_name_by_str(self, dish_name: str):
         with httpx.Client() as client:
             response = client.get(f"{AI_API_URL}/get_dish_name_by_str/{dish_name}")
+            response.raise_for_status()
+            data = response.json()
+            llm_dish_name, category = data["dish_name"], data["category"]
+            images = find_images(llm_dish_name)
+            return ImagesResponse(images=images, dish_name= dish_name, category=category)
+    
+    @service_handle_errors()
+    def retry_get_dish_name_by_str(self, dish_name: str, attempts: list[str]):
+        with httpx.Client() as client:
+            data = {"dish_name": dish_name, "attempts": attempts}
+            response = client.post(f"{AI_API_URL}/retry/", data=data)
             response.raise_for_status()
             data = response.json()
             llm_dish_name, category = data["dish_name"], data["category"]

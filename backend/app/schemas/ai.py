@@ -8,6 +8,10 @@ class ImagesResponse(BaseModel):
     dish_name: str
     category: str
 
+class RetryClassifyRequest(BaseModel):
+    dish_name: str
+    attempts: list[str]
+
 class ClassifyResponse(BaseModel):
     dish_name: str
     category: str

@@ -1,7 +1,4 @@
-import axios from 'axios'
-
-const BASE_URL = "http://localhost:8000"
-const API_URL = `${BASE_URL}/dish`
+import api from './index'
 
 export interface Dish {
     id: number
