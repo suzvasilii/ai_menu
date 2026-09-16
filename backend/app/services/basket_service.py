@@ -1,6 +1,6 @@
 from repositories.basket_repository import BasketRepository
 
-from schemas.basket import BasketAdd
+from schemas.basket import BasketAdd, BasketOut
 
 from utils.decorators import service_handle_errors
 
@@ -15,5 +15,8 @@ class BasketService:
             return {"status":200, "detail":"Basket saved!"}
 
     @service_handle_errors()
-    def get_all(self, user_id: int):
-        return self.repo.get_all(user_id)
+    def get_all(self, user_id: int) -> BasketOut:
+        basket = self.repo.get_all(user_id)
+        if basket is None:
+            return BasketOut(id=0, user_id=user_id, items=[])
+        return basket

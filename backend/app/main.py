@@ -10,7 +10,6 @@ from routers import auth_router, dish_router, order_router, basket_router, ai_ro
 app = FastAPI(title="Dishes API")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
-TG_BOT_URL = os.getenv("TG_BOT_URL")
 
 app.add_middleware(
     CORSMiddleware,
