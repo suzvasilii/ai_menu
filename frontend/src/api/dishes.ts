@@ -8,7 +8,7 @@ export interface Dish {
 
 export const dishesApi = {
     getAll: async (): Promise<Dish[]> => {
-        const response = await axios.get(`${API_URL}/get`)
+        const response = await api.get(`${API_URL}/get`)
         return response.data.map((dish: Dish) => ({
             ...dish,
             image_url: `${BASE_URL}${dish.image_url}`
@@ -16,12 +16,12 @@ export const dishesApi = {
     },
 
     create: async (name: string): Promise<Dish> => {
-        const response = await axios.post(`${API_URL}/create_by_name`, { name })
+        const response = await api.post(`${API_URL}/create_by_name`, { name })
         return response.data
     },
 
     delete: async (id: number): Promise<void> =>{
-        await axios.delete(`${API_URL}/del/${id}`)
+        await api.delete(`${API_URL}/del/${id}`)
     },
 
     createByPhoto: async (file: File): Promise<void> => {
