@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ClassifiedResponse } from '@/api/ai'
+import type { ClassifiedResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
 
 const props = defineProps<{ dishVar: ClassifiedResponse }>()

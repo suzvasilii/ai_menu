@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { DishesResponse } from '@/api/ai'
+import type { DishesResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
 
 const props = defineProps<{ dishVar: DishesResponse }>()

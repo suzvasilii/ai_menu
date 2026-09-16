@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { cartApi } from '@/api/cart'
+import { cartApi } from '@/api/cart.ts'
 
 export interface CartItem {
   name: string
@@ -8,7 +8,7 @@ export interface CartItem {
   quantity: number
 }
 
-export const useCartStore = defineStore('cart', () => {
+export const useCartStore = defineStore('cart.ts', () => {
   const items = ref<CartItem[]>([])
   const isLoading = ref(false)
   const isLoaded = ref(false)

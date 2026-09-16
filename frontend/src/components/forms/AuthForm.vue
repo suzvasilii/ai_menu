@@ -1,9 +1,8 @@
 <template>
   <div class="auth-modal-overlay">
     <div class="auth-modal">
-      <p><h2>Для входа в сервис необходима авторизация</h2></p>
-      <p><h3><a href="https://t.me/hypervotrsbot">Напишите нашему боту</a> команду /token</h3></p>
-      <p><h3><a href="https://t.me/hypervotrsbot">Если бот вас распознает, то вы сможете воспользоваться меню</a></h3></p>
+      <h2>Для входа в сервис необходима авторизация</h2>
+      <h3><a href="https://t.me/hypervotrsbot">Напишите нашему боту</a> команду /token</h3>
     </div>
   </div>
 </template>

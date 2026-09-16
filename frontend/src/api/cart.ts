@@ -1,17 +1,17 @@
 import api from './index'
 
-export interface BasketItem {
+interface BasketItem {
   dish_name: string
   quantity: number
   image_url?: string | null
 }
 
-export interface BasketAddRequest {
+interface BasketAddRequest {
   user_id: number
   items: BasketItem[]
 }
 
-export interface BasketResponse {
+interface BasketResponse {
   id: number
   user_id: number
   items: BasketItem[]
