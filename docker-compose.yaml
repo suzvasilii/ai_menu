@@ -11,6 +11,8 @@ services:
       - FRONTEND_URL=http://happsrv.mooo.com:5173
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
       - AI_API_URL=http://ai:8000
+    volumes:
+      - /home/vps/ai_menu/ai_menu/backend/app:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -24,6 +26,8 @@ services:
     restart: unless-stopped
     environment:
       - VITE_BACKEND_URL=http://happsrv.mooo.com:8000
+    volumes:
+      - /home/vps/ai_menu/ai_menu/frontend:/app
     ports:
       - "5173:5173"
 
@@ -46,15 +50,6 @@ services:
       - POSTGRES_DB=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  ai:
-    build:
-      context: ./ai
-      dockerfile: Dockerfile
-    container_name: ai
-    restart: unless-stopped
-    ports:
-      - "9000:8000"
 
 volumes:
   postgres_data:
