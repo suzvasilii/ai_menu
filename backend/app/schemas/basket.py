@@ -2,13 +2,13 @@ from pydantic import BaseModel
 from typing import List
 
 
-class BasketItem(BaseModel):
-    name: str
+class BasketItemAdd(BaseModel):
+    dish_name: str
     quantity: int
 
 class BasketAdd(BaseModel):
     user_id: int
-    items: List[BasketItem]
+    items: List[BasketItemAdd]
 
 
 class BasketItemOut(BaseModel):

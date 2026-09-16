@@ -27,7 +27,8 @@ watch(
     } else {
       cartStore.reset()
     }
-  }
+  },
+  { immediate: true }
 )
 
 onMounted(async () => {

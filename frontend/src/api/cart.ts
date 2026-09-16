@@ -1,31 +1,37 @@
 import api from './index'
 
-interface BasketItem {
+interface BasketItemPayload {
+  dish_name: string
+  quantity: number
+}
+
+interface BasketAddPayload {
+  user_id: number
+  items: BasketItemPayload[]
+}
+
+interface BasketItemResponse {
   dish_name: string
   quantity: number
   image_url?: string | null
 }
 
-interface BasketAddRequest {
-  user_id: number
-  items: BasketItem[]
-}
-
 interface BasketResponse {
   id: number
   user_id: number
-  items: BasketItem[]
+  items: BasketItemResponse[]
 }
 
 export const cartApi = {
-  add: async (payload: BasketAddRequest): Promise<void> => {
-    await api.post('/basket/add', payload)
+  add: async (payload: BasketAddPayload): Promise<BasketResponse> => {
+    const { data } = await api.post<BasketResponse>('/basket/add', payload)
+    return data
   },
 
   get: async (userId: number): Promise<BasketResponse> => {
-    const response = await api.get<BasketResponse>('/basket/get', {
-      params: { user_id: userId }
+    const { data } = await api.get<BasketResponse>('/basket/get', {
+      params: { user_id: userId },
     })
-    return response.data
+    return data
   },
 }

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { cartApi } from '@/api/cart.ts'
+import { cartApi, type BasketResponse } from '@/api/cart'
 
 export interface CartItem {
   name: string
@@ -8,55 +8,32 @@ export interface CartItem {
   quantity: number
 }
 
-export const useCartStore = defineStore('cart.ts', () => {
+export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
+  const basketId = ref<number>(0)
   const isLoading = ref(false)
-  const isLoaded = ref(false)
+  const loadedForUserId = ref<number | null>(null)
 
   const totalItems = computed(() =>
     items.value.reduce((sum, item) => sum + item.quantity, 0)
   )
 
-  function addToCart(product: { name: string; image?: string }) {
-    const existing = items.value.find(item => item.name === product.name)
-    if (existing) {
-      existing.quantity++
-    } else {
-      items.value.push({
-        name: product.name,
-        image: product.image ?? '',
-        quantity: 1
-      })
-    }
-  }
-
-  function removeFromCart(name: string) {
-    const index = items.value.findIndex(item => item.name === name)
-    if (index !== -1) items.value.splice(index, 1)
-  }
-
-  function decreaseQuantity(name: string) {
-    const item = items.value.find(item => item.name === name)
-    if (!item) return
-    if (item.quantity > 1) item.quantity--
-    else removeFromCart(name)
-  }
-
-  function clearCart() {
-    items.value = []
+  function applyBasket(data: BasketResponse) {
+    basketId.value = data.id
+    items.value = (data.items ?? []).map(item => ({
+      name: item.dish_name,
+      image: item.image_url ?? '',
+      quantity: item.quantity,
+    }))
   }
 
   async function loadFromBackend(userId: number) {
-    if (isLoaded.value) return
+    if (loadedForUserId.value === userId) return
     isLoading.value = true
     try {
       const data = await cartApi.get(userId)
-      items.value = (data.items ?? []).map(item => ({
-        name: item.dish_name,
-        image: item.image_url ?? '',
-        quantity: item.quantity
-      }))
-      isLoaded.value = true
+      applyBasket(data)
+      loadedForUserId.value = userId
     } catch (e) {
       console.error('Не удалось загрузить корзину:', e)
     } finally {
@@ -64,37 +41,33 @@ export const useCartStore = defineStore('cart.ts', () => {
     }
   }
 
-  async function saveToBackend(userId: number) {
+  async function addToCart(userId: number, product: { name: string; image?: string }) {
     try {
-      await cartApi.add({
+      const data = await cartApi.add({
         user_id: userId,
-        items: items.value.map(item => ({
-          dish_name: item.name,
-          quantity: item.quantity
-        }))
+        items: [{ dish_name: product.name, quantity: 1 }],
       })
+      applyBasket(data)
     } catch (e) {
-      console.error('Не удалось сохранить корзину:', e)
+      console.error('Не удалось добавить в корзину:', e)
     }
   }
 
   function reset() {
     items.value = []
-    isLoaded.value = false
+    basketId.value = 0
+    loadedForUserId.value = null
     isLoading.value = false
   }
 
   return {
     items,
+    basketId,
     isLoading,
-    isLoaded,
+    loadedForUserId,
     totalItems,
     addToCart,
-    removeFromCart,
-    decreaseQuantity,
-    clearCart,
     loadFromBackend,
-    saveToBackend,
     reset,
   }
 })

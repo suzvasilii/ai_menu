@@ -14,39 +14,42 @@
 </template>
 
 <script setup lang="ts">
+import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
+import { dishesApi } from '@/api/dishes'
+
 interface Product {
   id: number
   name: string
   image_url: string
 }
-import { useCartStore } from '@/stores/cart.ts'
-import { dishesApi } from "@/api/dishes.ts"
 
 const props = defineProps<{
   product: Product
 }>()
 
 const emit = defineEmits<{
-    (e: 'deleted', id: number): void
+  (e: 'deleted', id: number): void
 }>()
 
 const cartStore = useCartStore()
+const userStore = useUserStore()
 
-const addToCart = () =>{
-    cartStore.addToCart({
-    id: props.product.id,
+const addToCart = async () => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.addToCart(userId, {
     name: props.product.name,
-    image: props.product.image_url
-    })
+    image: props.product.image_url,
+  })
 }
 
-const deleteFromMenu = () =>{
-  try{
-    dishesApi.delete(props.product.id)
+const deleteFromMenu = async () => {
+  try {
+    await dishesApi.delete(props.product.id)
     emit('deleted', props.product.id)
-  }
-  catch (error:any) {
-    alert("Не удалось удалить блюдо из меню")
+  } catch (error) {
+    alert('Не удалось удалить блюдо из меню')
   }
 }
 </script>

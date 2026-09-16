@@ -5,7 +5,7 @@ from schemas.basket import BasketAdd, BasketOut
 
 router = APIRouter(prefix="/basket", tags=["basket"])
 
-@router.post("/add")
+@router.post("/add", response_model=BasketOut)
 def add(basket_data: BasketAdd, service: BasketService = Depends(get_basket_service)):
     return service.add(basket_data)
 
