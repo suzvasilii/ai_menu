@@ -12,7 +12,7 @@ export const dishesApi = {
         const response = await api.get('/dish/get')
         return response.data.map((dish: Dish) => ({
             ...dish,
-            image_url: `${BASE_URL}${dish.image_url}`
+            image_url: `http://happsrv.mooo.com:8000/${dish.image_url}`
         }))
     },
 
