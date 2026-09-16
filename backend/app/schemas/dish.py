@@ -9,6 +9,7 @@ class DishCreate(BaseModel):
 class DishResponse(BaseModel):
     id: int
     name: str
+    category: str
     image_url: str
 
     class Config:

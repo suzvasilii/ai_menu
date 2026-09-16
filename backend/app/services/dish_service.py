@@ -16,7 +16,7 @@ class DishService:
 
     @service_handle_errors(status_code=500)
     def create_by_name(self, dish: DishCreate, isSemantic=True):
-        return None
+        return self.repo.create_dish(dish.name, dish.category, dish.local_path)
 
     @service_handle_errors(status_code=501)
     def create_by_photo(self, file: UploadFile = File(...)):

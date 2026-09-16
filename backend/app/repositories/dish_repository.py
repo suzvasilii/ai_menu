@@ -5,9 +5,9 @@ class DishRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_dish(self, dish_name: str, local_path:str) -> Dish | None:
+    def create_dish(self, dish_name: str, category: str, local_path:str) -> Dish | None:
         try:
-            new_dish = Dish(name=dish_name, image_url=local_path)
+            new_dish = Dish(name=dish_name, category = category, image_url=local_path)
             self.db.add(new_dish)
             self.db.commit()
             self.db.refresh(new_dish)
