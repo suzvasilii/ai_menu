@@ -11,8 +11,6 @@ from utils.decorators import service_handle_errors
 from utils.saver import save_found_image, save_classified_image
 from utils.mapping import get_category_key
 
-from backend.app.services.ai_service import AI_API_URL
-
 load_dotenv()
 
 AI_API_URL=os.getenv("AI_API_URL")
