@@ -3,6 +3,7 @@ import httpx
 from dotenv import load_dotenv
 from utils.decorators import service_handle_errors
 from utils.saver import find_images
+from utils.mapping import get_category, get_ru_name
 from schemas.ai import ImageResponse, ImagesResponse, ClassifyResponse
 
 load_dotenv()
@@ -34,8 +35,8 @@ class AI_Service:
 
             return ImagesResponse(
                 images=images,
-                dish_name=llm_dish_name,
-                category=category,
+                dish_name=get_ru_name(llm_dish_name),
+                category=get_category(category),
             )
 
     @service_handle_errors()
@@ -53,8 +54,8 @@ class AI_Service:
 
             return ImagesResponse(
                 images=images,
-                dish_name=llm_dish_name,
-                category=category,
+                dish_name=get_ru_name(llm_dish_name),
+                category=get_category(category),
             )
 
     @service_handle_errors()

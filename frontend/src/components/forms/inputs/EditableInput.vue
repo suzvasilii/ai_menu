@@ -1,12 +1,8 @@
 <template>
   <div class="d-flex align-items-center gap-2">
-    <component
-      :is="h5"
-      v-if="!isEditing"
-      class="mb-0"
-    >
+    <h5 v-if="!isEditing" class="mb-0">
       {{ modelValue }}
-    </component>
+    </h5>
 
     <template v-else>
       <input
