@@ -10,6 +10,7 @@ load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
 
+
 class AI_Service:
 
     @service_handle_errors()
@@ -34,7 +35,8 @@ class AI_Service:
 
             return ImagesResponse(
                 images=images,
-                dish_name=llm_dish_name,
+                dish_name=dish_name,
+                english_dish_name=llm_dish_name,
                 category=get_category(category),
             )
 
@@ -53,7 +55,8 @@ class AI_Service:
 
             return ImagesResponse(
                 images=images,
-                dish_name=llm_dish_name,
+                dish_name=dish_name,
+                english_dish_name=llm_dish_name,
                 category=get_category(category),
             )
 
@@ -70,5 +73,5 @@ class AI_Service:
             data = response.json()
             return ClassifyResponse(
                 dish_name=data["dish_name"],
-                category=data["category"],
+                category=get_category(data["category"]),
             )

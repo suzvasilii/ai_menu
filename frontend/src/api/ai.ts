@@ -12,6 +12,7 @@ export interface DishResponse {
 export interface DishesResponse {
   images: DishResponse[]
   dish_name: string
+  english_dish_name: string
   category: string
   selected_image?: string
 }

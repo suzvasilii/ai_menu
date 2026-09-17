@@ -44,7 +44,6 @@
     </p>
   </div>
 
-  <!-- ================== МОДАЛКА ================== -->
   <Teleport to="body">
     <div
       v-if="isModalOpen"
@@ -69,12 +68,11 @@
             <ConfirmDish
               v-if="resultType === 'dish'"
               :dish-var="result"
-              :original-query="lastQuery"
               @confirm="onConfirmDish"
               @cancel="closeModal"
+              @retry="retry"
             />
 
-            <!-- Компонент 2: без картинок -->
             <ConfirmClassify
               v-else-if="resultType === 'classify'"
               :dish-var="result"
@@ -88,39 +86,38 @@
       </div>
     </div>
 
-    <!-- Затемнение фона -->
     <div v-if="isModalOpen" class="modal-backdrop fade show"></div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { aiApi } from '@/api/ai.ts'
+import { aiApi, type DishesResponse } from '@/api/ai'
 import ConfirmDish from './ConfirmDish.vue'
 import ConfirmClassify from './ConfirmClassify.vue'
 
 const dishName = ref('')
 const isLoading = ref(false)
 const selectedFile = ref<File | null>(null)
-const lastQuery = ref('')
 
-// --- состояние модалки ---
 const isModalOpen = ref(false)
 const result = ref<any>(null)
 const resultType = ref<'dish' | 'classify' | null>(null)
 
-// --- добавление блюда по названию ---
+const originalQuery = ref('')
+const attempts = ref<string[]>([])
+
 const addDish = async () => {
   if (!dishName.value.trim()) {
     console.warn('⚠️ Поле пустое')
     return
   }
-  lastQuery.value = dishName.value.trim()
+  originalQuery.value = dishName.value.trim()
+  attempts.value = []
   isLoading.value = true
   try {
-    const response = await aiApi.getDishPhoto(dishName.value.trim())
+    const response = await aiApi.getDishPhoto(originalQuery.value)
     openModal(response)
-
     dishName.value = ''
   } catch (e) {
     console.error(e)
@@ -129,7 +126,26 @@ const addDish = async () => {
   }
 }
 
-// --- загрузка фото ---
+const retry = async () => {
+  isLoading.value = true
+  try {
+    const current = result.value as DishesResponse | null
+    if (current?.english_dish_name) {
+      attempts.value.push(current.english_dish_name)
+    }
+
+    const response = await aiApi.retryGetDishPhoto({
+      dish_name: originalQuery.value,
+      attempts: attempts.value,
+    })
+    openModal(response)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
 const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   selectedFile.value = target.files?.[0] ?? null
@@ -142,7 +158,6 @@ const uploadPhoto = async () => {
   try {
     const response = await aiApi.classifyByPhoto(selectedFile.value)
     openModal(response)
-
     selectedFile.value = null
   } catch (e) {
     console.error(e)
@@ -151,12 +166,9 @@ const uploadPhoto = async () => {
   }
 }
 
-// --- открытие модалки и определение типа ---
 function openModal(response: any) {
   result.value = response
 
-  // Определи тип ответа под свой бэк.
-  // Пример: если есть непустой массив images — это 'dish', иначе 'classify'
   if (Array.isArray(response?.images) && response.images.length > 0) {
     resultType.value = 'dish'
   } else {
@@ -170,18 +182,17 @@ function closeModal() {
   isModalOpen.value = false
   result.value = null
   resultType.value = null
+  attempts.value = []
+  originalQuery.value = ''
 }
 
-// --- обработчики подтверждения ---
 function onConfirmDish(payload: any) {
   console.log('✅ Подтверждено (dish):', payload)
-  // тут отправка на сервер / router.push / что нужно
   closeModal()
 }
 
 function onConfirmClassify(payload: any) {
   console.log('✅ Подтверждено (classify):', payload)
-  // тут отправка на сервер / router.push / что нужно
   closeModal()
 }
 </script>

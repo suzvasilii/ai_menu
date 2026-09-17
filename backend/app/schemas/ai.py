@@ -8,6 +8,7 @@ class ImageResponse(BaseModel):
 class ImagesResponse(BaseModel):
     images: list[ImageResponse]
     dish_name: str
+    english_dish_name: str
     category: str
 
 

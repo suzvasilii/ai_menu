@@ -1,8 +1,8 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      <EditableInput v-model="props.originalQuery" />
-      <EditableInput v-model="props.dishVar.category" />
+      Блюдо: <EditableInput v-model="props.dishVar.dish_name" />
+      Категория: <EditableInput v-model="props.dishVar.category" />
 
       <div class="row g-3 mt-2">
         <div
@@ -33,6 +33,7 @@
 
       <div class="d-flex gap-2 mt-3">
         <button class="btn btn-success" @click="confirm">Все верно</button>
+        <button class="btn btn-warning" @click="$emit('retry')">Не подошло, ещё вариант</button>
         <button class="btn btn-secondary" @click="$emit('cancel')">Отмена</button>
       </div>
     </div>
@@ -43,14 +44,11 @@
 import type { DishesResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
 
-const props = defineProps<{
-  dishVar: DishesResponse
-  originalQuery: string
-}>()
-
+const props = defineProps<{ dishVar: DishesResponse }>()
 const emit = defineEmits<{
   (e: 'confirm', payload: DishesResponse): void
   (e: 'cancel'): void
+  (e: 'retry'): void
 }>()
 
 const chooseImage = (url: string) => {
