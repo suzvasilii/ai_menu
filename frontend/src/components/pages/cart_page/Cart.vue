@@ -102,20 +102,26 @@ const addOrder = async () => {
     return
   }
 
+  const userId = userStore.userId
+  if (!userId) {
+    alert("Не удалось определить пользователя")
+    return
+  }
+
   isLoading.value = true
 
   try {
     await ordersApi.create({
+      user_id: userId,
       customer_name: userName.value,
       comment: comment.value,
-      items: cartStore.items.map(item => ({
+      dishes: cartStore.items.map(item => ({
         name: item.name,
         quantity: item.quantity
       }))
     })
     alert("Вы успешно оформили новый заказ!")
-    const userId = userStore.userId
-    if (userId) await cartStore.clearCart(userId)
+    await cartStore.clearCart(userId)
     userName.value = ''
     router.push('/menu')
   } catch (error) {

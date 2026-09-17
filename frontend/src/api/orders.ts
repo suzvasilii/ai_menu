@@ -7,8 +7,9 @@ export interface OrderItem {
 
 export interface OrderCreate {
     customer_name?: string
+    user_id: number
     comment?: string
-    items: OrderItem[]
+    dishes: OrderItem[]
 }
 
 export const ordersApi = {
