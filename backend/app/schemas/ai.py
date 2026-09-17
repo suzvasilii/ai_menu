@@ -1,16 +1,20 @@
 from pydantic import BaseModel
 
+
 class ImageResponse(BaseModel):
-    dish_url: str
+    data_url: str
+
 
 class ImagesResponse(BaseModel):
     images: list[ImageResponse]
     dish_name: str
     category: str
 
+
 class RetryClassifyRequest(BaseModel):
     dish_name: str
     attempts: list[str]
+
 
 class ClassifyResponse(BaseModel):
     dish_name: str

@@ -3,13 +3,12 @@ import httpx
 from dotenv import load_dotenv
 from utils.decorators import service_handle_errors
 from utils.saver import find_images
-from schemas.ai import ImagesResponse, ClassifyResponse
+from schemas.ai import ImageResponse, ImagesResponse, ClassifyResponse
 
 load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
 
-print(AI_API_URL)
 
 class AI_Service:
 
@@ -19,8 +18,7 @@ class AI_Service:
             response = client.get(f"{AI_API_URL}/ask_officiant/{query}")
             response.raise_for_status()
             data = response.json()
-            answer = data["answer"]
-            return {"answer":answer}
+            return {"answer": data["answer"]}
 
     @service_handle_errors()
     def get_dish_name_by_str(self, dish_name: str):
@@ -28,20 +26,36 @@ class AI_Service:
             response = client.get(f"{AI_API_URL}/get_dish_name_by_str/{dish_name}")
             response.raise_for_status()
             data = response.json()
-            llm_dish_name, category = data["dish_name"], data["category"]
-            images = find_images(llm_dish_name)
-            return ImagesResponse(images=images, dish_name= dish_name, category=category)
-    
+            llm_dish_name = data["dish_name"]
+            category = data["category"]
+
+            raw_urls = find_images(llm_dish_name) or []
+            images = [ImageResponse(data_url=url) for url in raw_urls]
+
+            return ImagesResponse(
+                images=images,
+                dish_name=llm_dish_name,
+                category=category,
+            )
+
     @service_handle_errors()
     def retry_get_dish_name_by_str(self, dish_name: str, attempts: list[str]):
         with httpx.Client() as client:
-            data = {"dish_name": dish_name, "attempts": attempts}
-            response = client.post(f"{AI_API_URL}/retry/", data=data)
+            payload = {"dish_name": dish_name, "attempts": attempts}
+            response = client.post(f"{AI_API_URL}/retry", json=payload)
             response.raise_for_status()
             data = response.json()
-            llm_dish_name, category = data["dish_name"], data["category"]
-            images = find_images(llm_dish_name)
-            return ImagesResponse(images=images, dish_name= dish_name, category=category)
+            llm_dish_name = data["dish_name"]
+            category = data["category"]
+
+            raw_urls = find_images(llm_dish_name) or []
+            images = [ImageResponse(data_url=url) for url in raw_urls]
+
+            return ImagesResponse(
+                images=images,
+                dish_name=llm_dish_name,
+                category=category,
+            )
 
     @service_handle_errors()
     def classify_by_photo(self, photo):
@@ -50,8 +64,11 @@ class AI_Service:
         with httpx.Client() as client:
             response = client.post(
                 f"{AI_API_URL}/classify_photo",
-                files={"photo": (photo.filename, photo_bytes, photo.content_type)}
+                files={"photo": (photo.filename, photo_bytes, photo.content_type)},
             )
             response.raise_for_status()
             data = response.json()
-            return ClassifyResponse(dish_name=data["dish_name"], category=data["category"])
+            return ClassifyResponse(
+                dish_name=data["dish_name"],
+                category=data["category"],
+            )

@@ -45,12 +45,11 @@ import EditableInput from './inputs/EditableInput.vue'
 
 const props = defineProps<{ dishVar: DishesResponse }>()
 const emit = defineEmits<{
-  (e: 'confirm', payload: any): void
+  (e: 'confirm', payload: DishesResponse): void
   (e: 'cancel'): void
 }>()
 
 const chooseImage = (url: string) => {
-  // запоминаем выбранную картинку прямо в объект
   props.dishVar.selected_image = url
 }
 

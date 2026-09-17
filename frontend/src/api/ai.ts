@@ -1,49 +1,54 @@
 import api from './index'
 
-export interface RetryRequest{
+export interface RetryRequest {
   dish_name: string
   attempts: string[]
 }
 
-export interface DishResponse{
-  data_url:string
+export interface DishResponse {
+  data_url: string
 }
 
-export interface DishesResponse{
+export interface DishesResponse {
   images: DishResponse[]
-  dish_name:string,
-  categoty: string
+  dish_name: string
+  category: string
+  selected_image?: string
 }
 
-export interface ClassifiedResponse{
-  dish_name:string,
+export interface ClassifiedResponse {
+  dish_name: string
   category: string
 }
 
+export interface OfficiantResponse {
+  answer: string
+}
+
 export const aiApi = {
-  askOfficiant: async (question: string): Promise<string> => {
-    const response = await api.get(`/ai/officiant/${question}`)
-    return response.data
-  },
-    
-  getDishPhoto: async(dish_name: string): Promise<DishesResponse> => {
-    const response = await api.get(`/ai/get_name/${dish_name}`)
+  askOfficiant: async (question: string): Promise<OfficiantResponse> => {
+    const response = await api.get<OfficiantResponse>(`/ai/officiant/${question}`)
     return response.data
   },
 
-  retryGetDishPhoto: async(request: RetryRequest): Promise<DishesResponse> => {
-    const response = await api.post('/ai/retry_get_name', request)
+  getDishPhoto: async (dish_name: string): Promise<DishesResponse> => {
+    const response = await api.get<DishesResponse>(`/ai/get_name/${dish_name}`)
+    return response.data
+  },
+
+  retryGetDishPhoto: async (request: RetryRequest): Promise<DishesResponse> => {
+    const response = await api.post<DishesResponse>('/ai/retry_get_name', request)
     return response.data
   },
 
   classifyByPhoto: async (photo: File): Promise<ClassifiedResponse> => {
-      const formData = new FormData()
-      formData.append('photo', photo)
-      const response = await api.post('/ai/classify_photo', formData, {
-          headers: {
-              'Content-Type': 'multipart/form-data',
-          },
-      })
-      return response.data
-      }
+    const formData = new FormData()
+    formData.append('photo', photo)
+    const response = await api.post<ClassifiedResponse>('/ai/classify_photo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return response.data
+  },
 }
