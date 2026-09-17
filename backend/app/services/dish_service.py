@@ -3,7 +3,7 @@ import os
 import httpx
 from fastapi import UploadFile
 from PIL import Image
-from dotenv import load_env
+from dotenv import load_dotenv
 
 from schemas.dish import DishCreate, DishResponse
 from repositories.dish_repository import DishRepository
@@ -13,7 +13,7 @@ from utils.mapping import get_category_key
 
 from backend.app.services.ai_service import AI_API_URL
 
-load_env()
+load_dotenv()
 
 AI_API_URL=os.getenv("AI_API_URL")
 
