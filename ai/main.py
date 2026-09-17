@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, UploadFile, File
 from dotenv import load_dotenv
 
-from schemas import ClassifiedResponse, RetryClassifyRequest
+from schemas import ClassifiedResponse, RetryClassifyRequest, UpsertDishRequest
 from service import AI_Serivce
 from semantic.vector_search import TextClassifier
 load_dotenv()
@@ -30,6 +30,11 @@ def classify_photo(
     service: AI_Serivce = Depends(get_ai_service)
 ):
     return service.classify_photo(photo)
+
+@app.post("/upsert_dish")
+def upsert_dish(request: UpsertDishRequest, service: AI_Serivce = Depends(get_ai_service)):
+    service.upsert_dish(request.name, request.category)
+    return {"status": "ok"}
 
 @app.get("/health")
 def health():

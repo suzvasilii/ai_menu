@@ -10,7 +10,6 @@ load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
 
-
 class AI_Service:
 
     @service_handle_errors()

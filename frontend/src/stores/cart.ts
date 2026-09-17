@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { cartApi, type BasketResponse } from '@/api/cart'
+import { ordersApi, type Recommendation } from '@/api/orders'
 
 export interface CartItem {
   name: string
@@ -13,6 +14,8 @@ export const useCartStore = defineStore('cart', () => {
   const basketId = ref<number>(0)
   const isLoading = ref(false)
   const loadedForUserId = ref<number | null>(null)
+
+  const recommendations = ref<Recommendation[]>([])
 
   const totalItems = computed(() =>
     items.value.reduce((sum, item) => sum + item.quantity, 0)
@@ -104,11 +107,24 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  async function fetchRecommendations(userId: number, dishName: string) {
+    try {
+      const data = await ordersApi.getRecommendations(userId, dishName)
+      recommendations.value = data
+      return data
+    } catch (e) {
+      console.error('Не удалось загрузить рекомендации:', e)
+      recommendations.value = []
+      return []
+    }
+  }
+
   function reset() {
     items.value = []
     basketId.value = 0
     loadedForUserId.value = null
     isLoading.value = false
+    recommendations.value = []
   }
 
   return {
@@ -116,6 +132,7 @@ export const useCartStore = defineStore('cart', () => {
     basketId,
     isLoading,
     loadedForUserId,
+    recommendations,
     totalItems,
     addToCart,
     increaseQuantity,
@@ -123,6 +140,7 @@ export const useCartStore = defineStore('cart', () => {
     removeFromCart,
     clearCart,
     loadFromBackend,
+    fetchRecommendations,
     reset,
   }
 })

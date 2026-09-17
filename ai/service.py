@@ -86,3 +86,5 @@ class AI_Serivce:
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
+    def upsert_dish(self, name: str, category: str) -> None:
+        self.classifier.upsert_item(name, category)

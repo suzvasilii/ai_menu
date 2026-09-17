@@ -10,3 +10,8 @@ CATEGORY_LABELS = {
 
 def get_category(en_lbl: str) -> str:
     return CATEGORY_LABELS.get(en_lbl, en_lbl)
+
+CATEGORY_KEYS = {v: k for k, v in CATEGORY_LABELS.items()}
+
+def get_category_key(ru_category: str) -> str:
+    return CATEGORY_KEYS.get(ru_category, ru_category)

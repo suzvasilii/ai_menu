@@ -42,16 +42,26 @@ class TextClassifier:
         best_idx = indices[0][0]
         return self.categories[best_idx]
 
-    def add_item(self, name: str, category: str):
-        embedding = self.embedder.encode([name], convert_to_numpy=True)
-        embedding = embedding.astype('float32')
+    def upsert_item(self, name: str, category: str):
+        if os.path.exists(self.csv_path):
+            df = pd.read_csv(self.csv_path)
+        else:
+            df = pd.DataFrame(columns=["name", "category"])
+
+        mask = df["name"] == name
+        if mask.any():
+            idx = self.names.index(name)
+            if self.categories[idx] != category:
+                self.categories[idx] = category
+                df.loc[mask, "category"] = category
+                df.to_csv(self.csv_path, index=False)
+            return
+
+        embedding = self.embedder.encode([name], convert_to_numpy=True).astype('float32')
         self.index.add(embedding)
         self.names.append(name)
         self.categories.append(category)
+
         new_row = pd.DataFrame({"name": [name], "category": [category]})
-        if os.path.exists(self.csv_path):
-            df = pd.read_csv(self.csv_path)
-            df = pd.concat([df, new_row], ignore_index=True)
-            df.to_csv(self.csv_path, index=False)
-        else:
-            new_row.to_csv(self.csv_path, index=False)
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv(self.csv_path, index=False)

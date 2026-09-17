@@ -1,4 +1,3 @@
-<!-- app/components/ProductCard.vue -->
 <template>
   <div class="product-card">
     <div class="product-image">
@@ -10,13 +9,22 @@
       <button type="button" class="btn btn-info" @click="addToCart">Выбрать это</button>
       <button type="button" class="btn btn-danger" @click="deleteFromMenu">Удалить это</button>
     </div>
+
+    <RecModal
+      :is-open="isRecModalOpen"
+      :recommendations="cartStore.recommendations"
+      @close="isRecModalOpen = false"
+      @add="onAddRecommendation"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/user'
 import { dishesApi } from '@/api/dishes'
+import RecModal from '@/components/modals/RecModal.vue'
 
 interface Product {
   id: number
@@ -24,31 +32,40 @@ interface Product {
   image_url: string
 }
 
-const props = defineProps<{
-  product: Product
-}>()
-
-const emit = defineEmits<{
-  (e: 'deleted', id: number): void
-}>()
+const props = defineProps<{ product: Product }>()
+const emit = defineEmits<{ (e: 'deleted', id: number): void }>()
 
 const cartStore = useCartStore()
 const userStore = useUserStore()
 
+const isRecModalOpen = ref(false)
+
 const addToCart = async () => {
   const userId = userStore.userId
   if (!userId) return
+
   await cartStore.addToCart(userId, {
     name: props.product.name,
     image: props.product.image_url,
   })
+
+  const recs = await cartStore.fetchRecommendations(userId, props.product.name)
+  if (recs.length > 0) {
+    isRecModalOpen.value = true
+  }
+}
+
+const onAddRecommendation = async (name: string) => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.addToCart(userId, { name })
 }
 
 const deleteFromMenu = async () => {
   try {
     await dishesApi.delete(props.product.id)
     emit('deleted', props.product.id)
-  } catch (error) {
+  } catch {
     alert('Не удалось удалить блюдо из меню')
   }
 }

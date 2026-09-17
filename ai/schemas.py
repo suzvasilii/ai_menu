@@ -10,3 +10,7 @@ class ClassifiedResponse(BaseModel):
 class RetryClassifyRequest(BaseModel):
     dish_name: str
     attempts: list[str]
+
+class UpsertDishRequest(BaseModel):
+    name: str
+    category: str

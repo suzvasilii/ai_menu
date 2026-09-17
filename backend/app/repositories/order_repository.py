@@ -1,4 +1,4 @@
-from db.models import Order
+from db.models import Order, Dish
 from schemas.order import OrderCreate
 
 
@@ -29,3 +29,11 @@ class OrderRepository:
             return self.db.query(Order).all()
         except Exception as e:
             raise RuntimeError(f"Error of getting orders for all users: {e}")
+
+    def get_dishes_by_names(self, names: list[str]) -> list[Dish]:
+        if not names:
+            return []
+        try:
+            return self.db.query(Dish).filter(Dish.name.in_(names)).all()
+        except Exception as e:
+            raise RuntimeError(f"Error of getting dishes by names: {e}")
