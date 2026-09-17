@@ -11,6 +11,10 @@ services:
       - FRONTEND_URL=http://happsrv.mooo.com:5173
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
       - AI_API_URL=http://ai:8000
+      - UNSPLASH_ACCESS_KEY=4mc3I6WRyfCyHooeVYPoIuRmftnolSrJVBfcglPg_FE
+      - JWT_SECRET_KEY=IuRmftnolSrJVBfcglPg_FE!@
+      - TELEGRAM_BOT_TOKEN=8352618341:AAGoSD2f8SqutURVrSstjVcQMm2vCT8ST8A
+      - TELEGRAM_CHAT_ID_SHEF=1644077036
     volumes:
       - /home/vps/ai_menu/ai_menu/backend/app:/app
     ports:

@@ -4,6 +4,7 @@ from schemas.order import OrderCreate
 from repositories.order_repository import OrderRepository
 from db.models import Order
 from utils.decorators import service_handle_errors
+from services.notify_service import notify_shef
 
 class OrderService:
     def __init__(self, repo: OrderRepository):
@@ -12,6 +13,10 @@ class OrderService:
     @service_handle_errors()
     def create(self, order_data: OrderCreate):
         self.repo.create(order_data)
+        try:
+            notify_shef(order_data)
+        except Exception as e:
+            print(f"Failed to notify shef: {e}")
         return {"status": 200, "detail": "order created successfully"}
 
     @service_handle_errors()
