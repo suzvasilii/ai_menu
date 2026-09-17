@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { DishesResponse } from '@/api/ai'
 import EditableSelect from "@/components/forms/selects/EditableSelect.vue"
 import { CATEGORIES_RU } from "@/сonstants/categories.ts"
@@ -51,9 +52,14 @@ const emit = defineEmits<{
   (e: 'retry'): void
 }>()
 
+const originalCategory = ref(props.dishVar.category)
+
 const chooseImage = (url: string) => {
   props.dishVar.selected_image = url
-  emit('confirm', { ...props.dishVar })
+  emit('confirm', {
+    ...props.dishVar,
+    category_changed: props.dishVar.category !== originalCategory.value,
+  } as any)
 }
 </script>
 

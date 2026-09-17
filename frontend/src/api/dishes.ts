@@ -11,12 +11,16 @@ export interface DishCreatePayload {
     name: string
     category: string
     image_url?: string
+    english_dish_name?: string
+    category_changed?: boolean
 }
 
 export interface DishCreatePhotoPayload {
     file: File
     name: string
     category: string
+    english_dish_name?: string
+    category_changed?: boolean
 }
 
 export const dishesApi = {
@@ -35,14 +39,16 @@ export const dishesApi = {
     },
 
     createByPhoto: async (payload: DishCreatePhotoPayload): Promise<void> => {
-        const formData = new FormData()
-        formData.append('file', payload.file)
-        formData.append('name', payload.name)
-        formData.append('category', payload.category)
-        await api.post('/dish/create_by_photo', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
+    const formData = new FormData()
+    formData.append('file', payload.file)
+    formData.append('name', payload.name)
+    formData.append('category', payload.category)
+    formData.append('english_dish_name', payload.english_dish_name ?? payload.name)
+    formData.append('category_changed', String(payload.category_changed ?? false))
+    await api.post('/dish/create_by_photo', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
     },
 }

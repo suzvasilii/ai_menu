@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { ClassifiedResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
 import EditableSelect from "@/components/forms/selects/EditableSelect.vue"
@@ -27,10 +28,13 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
+const originalCategory = ref(props.dishVar.category)
+
 function confirm() {
   emit('confirm', {
     dish_name: props.dishVar.dish_name,
     category: props.dishVar.category,
-  })
+    category_changed: props.dishVar.category !== originalCategory.value,
+  } as any)
 }
 </script>

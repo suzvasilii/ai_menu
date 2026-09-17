@@ -197,6 +197,8 @@ async function onConfirmDish(payload: DishesResponse) {
       name: payload.dish_name,
       category: payload.category,
       image_url: payload.selected_image ?? '',
+      english_dish_name: payload.english_dish_name,
+      category_changed: (payload as any).category_changed,
     })
     emit('created')
     closeModal()
@@ -216,6 +218,8 @@ async function onConfirmClassify(payload: ClassifiedResponse) {
       file: selectedFile.value,
       name: payload.dish_name,
       category: payload.category,
+      english_dish_name: payload.dish_name,
+      category_changed: (payload as any).category_changed,
     })
     emit('created')
     closeModal()
