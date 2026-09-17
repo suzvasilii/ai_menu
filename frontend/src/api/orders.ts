@@ -1,8 +1,4 @@
-import axios from 'axios'
-
-const BASE_URL = "http://localhost:8000"
-const API_URL = `${BASE_URL}/api`
-
+import api from './index'
 
 export interface OrderItem {
     name: string
@@ -17,7 +13,7 @@ export interface OrderCreate {
 
 export const ordersApi = {
     create: async (order: OrderCreate): Promise<{ status: string; message: string }> => {
-        const response = await axios.post(`${API_URL}/orders`, order)
+        const response = await api.post('/order/create_order', order)
         return response.data
     }
 }
