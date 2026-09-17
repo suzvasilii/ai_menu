@@ -16,6 +16,7 @@ os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY")
 UNSPLASH_URL = "https://api.unsplash.com/search/photos"
+BACKEND_URL = os.getenv("BACKEND_URL", "http://happsrv.mooo.com:8000")
 
 
 @saver_handle_errors
@@ -35,7 +36,7 @@ def find_images(name: str) -> list[str]:
 
 
 @saver_handle_errors
-def save_found_image(dish_name: str, image_url: str):
+def save_found_image(dish_name: str, image_url: str) -> str:
     with httpx.Client() as client:
         img_resp = client.get(
             image_url,
@@ -48,13 +49,13 @@ def save_found_image(dish_name: str, image_url: str):
         filepath = os.path.join(UPLOADS_DIR, f"{safe_name}.jpg")
         with open(filepath, "wb") as f:
             f.write(img_resp.content)
-        return f"/uploads/{safe_name}.jpg"
+        return f"{BACKEND_URL}/uploads/{safe_name}.jpg"
 
 
 @saver_handle_errors
-def save_classified_image(image: Image, dish_name: str):
+def save_classified_image(image: Image, dish_name: str) -> str:
     unique_id = uuid.uuid4().hex[:10]
     safe_name = f"{dish_name.replace(' ', '_')}_{unique_id}.jpg"
     filepath = os.path.join(UPLOADS_DIR, safe_name)
     image.save(filepath)
-    return f"/uploads/{safe_name}"
+    return f"{BACKEND_URL}/uploads/{safe_name}"

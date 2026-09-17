@@ -22,10 +22,7 @@ export interface DishCreatePhotoPayload {
 export const dishesApi = {
     getAll: async (): Promise<Dish[]> => {
         const response = await api.get('/dish/get')
-        return response.data.map((dish: Dish) => ({
-            ...dish,
-            image_url: `http://happsrv.mooo.com:8000/${dish.image_url}`
-        }))
+        return response.data
     },
 
     create: async (payload: DishCreatePayload): Promise<Dish> => {

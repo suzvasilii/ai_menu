@@ -1,16 +1,11 @@
-import os
 import io
-import uuid
 from fastapi import UploadFile
 from PIL import Image
 
 from schemas.dish import DishCreate, DishResponse
 from repositories.dish_repository import DishRepository
 from utils.decorators import service_handle_errors
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-UPLOADS_DIR = os.path.join(BASE_DIR, "uploads")
-os.makedirs(UPLOADS_DIR, exist_ok=True)
+from utils.saver import save_found_image, save_classified_image
 
 
 class DishService:
@@ -20,7 +15,10 @@ class DishService:
 
     @service_handle_errors(status_code=500)
     def create_by_name(self, dish: DishCreate) -> DishResponse:
-        return self.repo.create_dish(dish.name, dish.category, dish.image_url or "")
+        image_url = dish.image_url or ""
+        if image_url.startswith("http"):
+            image_url = save_found_image(dish.name, image_url) or ""
+        return self.repo.create_dish(dish.name, dish.category, image_url)
 
     @service_handle_errors(status_code=501)
     def create_by_photo(self, file: UploadFile, name: str, category: str) -> DishResponse:
@@ -28,12 +26,7 @@ class DishService:
         contents = file.file.read()
         image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-        unique_id = uuid.uuid4().hex[:10]
-        safe_name = f"{name.replace(' ', '_')}_{unique_id}.jpg"
-        filepath = os.path.join(UPLOADS_DIR, safe_name)
-        image.save(filepath)
-
-        image_url = f"/uploads/{safe_name}"
+        image_url = save_classified_image(image, name)
         return self.repo.create_dish(name, category, image_url)
 
     @service_handle_errors(status_code=502)
