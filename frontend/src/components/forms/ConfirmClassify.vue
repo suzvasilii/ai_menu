@@ -18,8 +18,8 @@
 <script setup lang="ts">
 import type { ClassifiedResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
-import {CATEGORIES_RU} from "@/сonstants/categories.ts";
-import EditableSelect from "@/components/forms/selects/EditableSelect.vue";
+import EditableSelect from "@/components/forms/selects/EditableSelect.vue"
+import { CATEGORIES_RU } from "@/сonstants/categories.ts"
 
 const props = defineProps<{ dishVar: ClassifiedResponse }>()
 const emit = defineEmits<{

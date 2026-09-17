@@ -92,9 +92,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { aiApi, type DishesResponse } from '@/api/ai'
+import { aiApi, type DishesResponse, type ClassifiedResponse } from '@/api/ai'
+import { dishesApi } from '@/api/dishes'
 import ConfirmDish from './ConfirmDish.vue'
 import ConfirmClassify from './ConfirmClassify.vue'
+
+const emit = defineEmits<{
+  (e: 'created'): void
+}>()
 
 const dishName = ref('')
 const isLoading = ref(false)
@@ -158,7 +163,6 @@ const uploadPhoto = async () => {
   try {
     const response = await aiApi.classifyByPhoto(selectedFile.value)
     openModal(response)
-    selectedFile.value = null
   } catch (e) {
     console.error(e)
   } finally {
@@ -184,16 +188,41 @@ function closeModal() {
   resultType.value = null
   attempts.value = []
   originalQuery.value = ''
+  selectedFile.value = null
 }
 
-function onConfirmDish(payload: any) {
-  console.log('✅ Подтверждено (dish):', payload)
-  closeModal()
+async function onConfirmDish(payload: DishesResponse) {
+  try {
+    await dishesApi.create({
+      name: payload.dish_name,
+      category: payload.category,
+      image_url: payload.selected_image ?? '',
+    })
+    emit('created')
+    closeModal()
+  } catch (e) {
+    console.error(e)
+    alert('Не удалось сохранить блюдо')
+  }
 }
 
-function onConfirmClassify(payload: any) {
-  console.log('✅ Подтверждено (classify):', payload)
-  closeModal()
+async function onConfirmClassify(payload: ClassifiedResponse) {
+  if (!selectedFile.value) {
+    alert('Файл не найден')
+    return
+  }
+  try {
+    await dishesApi.createByPhoto({
+      file: selectedFile.value,
+      name: payload.dish_name,
+      category: payload.category,
+    })
+    emit('created')
+    closeModal()
+  } catch (e) {
+    console.error(e)
+    alert('Не удалось сохранить блюдо')
+  }
 }
 </script>
 

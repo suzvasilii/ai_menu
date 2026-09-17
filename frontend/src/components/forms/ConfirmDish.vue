@@ -32,7 +32,6 @@
       <h5 class="card-title mb-3">Если есть необходимость, отредактируйте</h5>
 
       <div class="d-flex gap-2 mt-3">
-        <button class="btn btn-success" @click="confirm">Все верно</button>
         <button class="btn btn-warning" @click="$emit('retry')">Не подошло, ещё вариант</button>
         <button class="btn btn-secondary" @click="$emit('cancel')">Отмена</button>
       </div>
@@ -42,9 +41,8 @@
 
 <script setup lang="ts">
 import type { DishesResponse } from '@/api/ai'
-import EditableInput from './inputs/EditableInput.vue'
-import EditableSelect from "@/components/forms/selects/EditableSelect.vue";
-import {CATEGORIES_RU} from "@/сonstants/categories.ts";
+import EditableSelect from "@/components/forms/selects/EditableSelect.vue"
+import { CATEGORIES_RU } from "@/сonstants/categories.ts"
 
 const props = defineProps<{ dishVar: DishesResponse }>()
 const emit = defineEmits<{
@@ -55,9 +53,6 @@ const emit = defineEmits<{
 
 const chooseImage = (url: string) => {
   props.dishVar.selected_image = url
-}
-
-function confirm() {
   emit('confirm', { ...props.dishVar })
 }
 </script>

@@ -7,6 +7,18 @@ export interface Dish {
     image_url: string
 }
 
+export interface DishCreatePayload {
+    name: string
+    category: string
+    image_url?: string
+}
+
+export interface DishCreatePhotoPayload {
+    file: File
+    name: string
+    category: string
+}
+
 export const dishesApi = {
     getAll: async (): Promise<Dish[]> => {
         const response = await api.get('/dish/get')
@@ -16,22 +28,24 @@ export const dishesApi = {
         }))
     },
 
-    create: async (name: string): Promise<Dish> => {
-        const response = await api.post('/dish/create_by_name', { name })
+    create: async (payload: DishCreatePayload): Promise<Dish> => {
+        const response = await api.post('/dish/create_by_name', payload)
         return response.data
     },
 
-    delete: async (id: number): Promise<void> =>{
-        await api.delete('/dish/del/${id}')
+    delete: async (id: number): Promise<void> => {
+        await api.delete(`/dish/del/${id}`)
     },
 
-    createByPhoto: async (file: File): Promise<void> => {
-    const formData = new FormData()
-    formData.append('file', file)
-    await axios.post('/dish/create_by_photo', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    })
+    createByPhoto: async (payload: DishCreatePhotoPayload): Promise<void> => {
+        const formData = new FormData()
+        formData.append('file', payload.file)
+        formData.append('name', payload.name)
+        formData.append('category', payload.category)
+        await api.post('/dish/create_by_photo', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
     },
 }
