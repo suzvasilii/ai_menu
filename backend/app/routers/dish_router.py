@@ -16,9 +16,11 @@ def create_dish_by_photo(
     file: UploadFile = File(...),
     name: str = Form(...),
     category: str = Form(...),
+    english_dish_name: str = Form(None),
+    category_changed: bool = Form(False),
     service: DishService = Depends(get_dish_service),
 ):
-    return service.create_by_photo(file, name, category)
+    return service.create_by_photo(file, name, category, english_dish_name, category_changed)
 
 
 @router.get("/get", response_model=list[DishResponse])
