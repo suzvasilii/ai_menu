@@ -66,10 +66,10 @@
           </div>
 
           <div class="modal-body">
-            <!-- Компонент 1: с картинками -->
             <ConfirmDish
               v-if="resultType === 'dish'"
               :dish-var="result"
+              :original-query="lastQuery"
               @confirm="onConfirmDish"
               @cancel="closeModal"
             />
@@ -102,6 +102,7 @@ import ConfirmClassify from './ConfirmClassify.vue'
 const dishName = ref('')
 const isLoading = ref(false)
 const selectedFile = ref<File | null>(null)
+const lastQuery = ref('')
 
 // --- состояние модалки ---
 const isModalOpen = ref(false)
@@ -114,7 +115,7 @@ const addDish = async () => {
     console.warn('⚠️ Поле пустое')
     return
   }
-
+  lastQuery.value = dishName.value.trim()
   isLoading.value = true
   try {
     const response = await aiApi.getDishPhoto(dishName.value.trim())
@@ -139,10 +140,7 @@ const uploadPhoto = async () => {
 
   isLoading.value = true
   try {
-    const formData = new FormData()
-    formData.append('file', selectedFile.value)
-
-    const response = await aiApi.uploadPhoto(formData) // ← подставь свой метод
+    const response = await aiApi.classifyByPhoto(selectedFile.value)
     openModal(response)
 
     selectedFile.value = null

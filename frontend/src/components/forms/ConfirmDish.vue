@@ -1,7 +1,7 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      <EditableInput v-model="props.dishVar.dish_name" />
+      <EditableInput v-model="props.originalQuery" />
       <EditableInput v-model="props.dishVar.category" />
 
       <div class="row g-3 mt-2">
@@ -43,7 +43,11 @@
 import type { DishesResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
 
-const props = defineProps<{ dishVar: DishesResponse }>()
+const props = defineProps<{
+  dishVar: DishesResponse
+  originalQuery: string
+}>()
+
 const emit = defineEmits<{
   (e: 'confirm', payload: DishesResponse): void
   (e: 'cancel'): void

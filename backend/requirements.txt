@@ -14,4 +14,3 @@ redis
 tqdm
 python-magic
 pillow
-deep-translator
