@@ -1,22 +1,37 @@
 import api from './index'
 
-interface BasketItemPayload {
+export interface BasketItemPayload {
   dish_name: string
   quantity: number
 }
 
-interface BasketAddPayload {
+export interface BasketAddPayload {
   user_id: number
   items: BasketItemPayload[]
 }
 
-interface BasketItemResponse {
+export interface BasketRemovePayload {
+  user_id: number
+  dish_name: string
+}
+
+export interface BasketUpdatePayload {
+  user_id: number
+  dish_name: string
+  quantity: number
+}
+
+export interface BasketClearPayload {
+  user_id: number
+}
+
+export interface BasketItemResponse {
   dish_name: string
   quantity: number
   image_url?: string | null
 }
 
-interface BasketResponse {
+export interface BasketResponse {
   id: number
   user_id: number
   items: BasketItemResponse[]
@@ -32,6 +47,21 @@ export const cartApi = {
     const { data } = await api.get<BasketResponse>('/basket/get', {
       params: { user_id: userId },
     })
+    return data
+  },
+
+  removeItem: async (payload: BasketRemovePayload): Promise<BasketResponse> => {
+    const { data } = await api.post<BasketResponse>('/basket/remove', payload)
+    return data
+  },
+
+  updateItem: async (payload: BasketUpdatePayload): Promise<BasketResponse> => {
+    const { data } = await api.post<BasketResponse>('/basket/update', payload)
+    return data
+  },
+
+  clear: async (payload: BasketClearPayload): Promise<BasketResponse> => {
+    const { data } = await api.post<BasketResponse>('/basket/clear', payload)
     return data
   },
 }

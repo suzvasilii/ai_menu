@@ -6,6 +6,7 @@ class BasketItemAdd(BaseModel):
     dish_name: str
     quantity: int
 
+
 class BasketAdd(BaseModel):
     user_id: int
     items: List[BasketItemAdd]
@@ -19,6 +20,7 @@ class BasketItemOut(BaseModel):
     class Config:
         from_attributes = True
 
+
 class BasketOut(BaseModel):
     id: int
     user_id: int
@@ -26,3 +28,18 @@ class BasketOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class BasketRemovePayload(BaseModel):
+    user_id: int
+    dish_name: str
+
+
+class BasketUpdatePayload(BaseModel):
+    user_id: int
+    dish_name: str
+    quantity: int
+
+
+class BasketClearPayload(BaseModel):
+    user_id: int

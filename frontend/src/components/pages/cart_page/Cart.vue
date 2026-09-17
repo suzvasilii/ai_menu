@@ -22,25 +22,10 @@
           </div>
 
           <div class="cart-item-actions">
-            <button
-              @click="cartStore.decreaseQuantity(item.name)"
-              class="qty-btn"
-            >
-              −
-            </button>
+            <button @click="decrease(item.name)" class="qty-btn">−</button>
             <span class="qty-count">{{ item.quantity }}</span>
-            <button
-              @click="cartStore.addToCart({ name: item.name, image: item.image })"
-              class="qty-btn"
-            >
-              +
-            </button>
-            <button
-              @click="cartStore.removeFromCart(item.name)"
-              class="remove-btn"
-            >
-              ✕
-            </button>
+            <button @click="increase(item.name)" class="qty-btn">+</button>
+            <button @click="remove(item.name)" class="remove-btn">✕</button>
           </div>
         </div>
       </div>
@@ -63,7 +48,7 @@
           <span v-if="isLoading">⏳ Отправка...</span>
           <span v-else>Оформить заказ</span>
         </button>
-        <button @click="cartStore.clearCart" class="clear-btn">
+        <button @click="clear" class="clear-btn">
           Очистить корзину
         </button>
       </div>
@@ -74,16 +59,42 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { useCartStore } from '@/stores/cart.ts'
-import { ordersApi } from '@/api/orders.ts'
+import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
+import { ordersApi } from '@/api/orders'
 
-import { router } from "@/router/router.ts"
+import { router } from "@/router/router"
 
 const cartStore = useCartStore()
+const userStore = useUserStore()
 
 const userName = ref('')
 const comment = ref('')
 const isLoading = ref(false)
+
+const increase = async (dishName: string) => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.increaseQuantity(userId, dishName)
+}
+
+const decrease = async (dishName: string) => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.decreaseQuantity(userId, dishName)
+}
+
+const remove = async (dishName: string) => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.removeFromCart(userId, dishName)
+}
+
+const clear = async () => {
+  const userId = userStore.userId
+  if (!userId) return
+  await cartStore.clearCart(userId)
+}
 
 const addOrder = async () => {
   if (!userName.value.trim()) {
@@ -103,7 +114,8 @@ const addOrder = async () => {
       }))
     })
     alert("Вы успешно оформили новый заказ!")
-    cartStore.clearCart()
+    const userId = userStore.userId
+    if (userId) await cartStore.clearCart(userId)
     userName.value = ''
     router.push('/menu')
   } catch (error) {

@@ -53,6 +53,57 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  async function increaseQuantity(userId: number, dishName: string) {
+    const item = items.value.find(i => i.name === dishName)
+    if (!item) return
+    try {
+      const data = await cartApi.updateItem({
+        user_id: userId,
+        dish_name: dishName,
+        quantity: item.quantity + 1,
+      })
+      applyBasket(data)
+    } catch (e) {
+      console.error('Не удалось увеличить количество:', e)
+    }
+  }
+
+  async function decreaseQuantity(userId: number, dishName: string) {
+    const item = items.value.find(i => i.name === dishName)
+    if (!item) return
+    try {
+      const data = await cartApi.updateItem({
+        user_id: userId,
+        dish_name: dishName,
+        quantity: item.quantity - 1,
+      })
+      applyBasket(data)
+    } catch (e) {
+      console.error('Не удалось уменьшить количество:', e)
+    }
+  }
+
+  async function removeFromCart(userId: number, dishName: string) {
+    try {
+      const data = await cartApi.removeItem({
+        user_id: userId,
+        dish_name: dishName,
+      })
+      applyBasket(data)
+    } catch (e) {
+      console.error('Не удалось удалить из корзины:', e)
+    }
+  }
+
+  async function clearCart(userId: number) {
+    try {
+      const data = await cartApi.clear({ user_id: userId })
+      applyBasket(data)
+    } catch (e) {
+      console.error('Не удалось очистить корзину:', e)
+    }
+  }
+
   function reset() {
     items.value = []
     basketId.value = 0
@@ -67,6 +118,10 @@ export const useCartStore = defineStore('cart', () => {
     loadedForUserId,
     totalItems,
     addToCart,
+    increaseQuantity,
+    decreaseQuantity,
+    removeFromCart,
+    clearCart,
     loadFromBackend,
     reset,
   }

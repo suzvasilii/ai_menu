@@ -32,3 +32,18 @@ class BasketService:
     def get_all(self, user_id: int) -> BasketOut:
         basket = self.repo.get_all(user_id)
         return self._to_out(basket, user_id)
+
+    @service_handle_errors()
+    def remove_item(self, user_id: int, dish_name: str) -> BasketOut:
+        basket = self.repo.remove_item(user_id, dish_name)
+        return self._to_out(basket, user_id)
+
+    @service_handle_errors()
+    def update_item_quantity(self, user_id: int, dish_name: str, quantity: int) -> BasketOut:
+        basket = self.repo.update_item_quantity(user_id, dish_name, quantity)
+        return self._to_out(basket, user_id)
+
+    @service_handle_errors()
+    def clear(self, user_id: int) -> BasketOut:
+        basket = self.repo.clear(user_id)
+        return self._to_out(basket, user_id)
