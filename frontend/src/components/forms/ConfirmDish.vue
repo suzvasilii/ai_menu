@@ -1,8 +1,8 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      Блюдо: <EditableInput v-model="props.dishVar.dish_name" />
-      Категория: <EditableInput v-model="props.dishVar.category" />
+      Блюдо: {{ props.dishVar.dish_name }}
+      Категория: <EditableSelect v-model="props.dishVar.category" :options="CATEGORIES_RU" />
 
       <div class="row g-3 mt-2">
         <div
@@ -43,6 +43,8 @@
 <script setup lang="ts">
 import type { DishesResponse } from '@/api/ai'
 import EditableInput from './inputs/EditableInput.vue'
+import EditableSelect from "@/components/forms/selects/EditableSelect.vue";
+import {CATEGORIES_RU} from "@/сonstants/categories.ts";
 
 const props = defineProps<{ dishVar: DishesResponse }>()
 const emit = defineEmits<{
