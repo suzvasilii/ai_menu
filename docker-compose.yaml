@@ -55,5 +55,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  ai:
+    build:
+      context: ./ai
+      dockerfile: Dockerfile
+    container_name: ai
+    restart: unless-stopped
+    volumes:
+      - /home/vps/ai_menu/ai_menu/ai:/app
+    ports:
+      - "9000:8000"
+
 volumes:
   postgres_data:
