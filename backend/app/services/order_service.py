@@ -12,7 +12,7 @@ class OrderService:
     @service_handle_errors()
     def create(self, order_data: OrderCreate):
         self.repo.create(order_data)
-        return {"status":200, "detail":"order created successfully"}
+        return {"status": 200, "detail": "order created successfully"}
 
     @service_handle_errors()
     def get_recommendations(self, user_id: int, current_dish: str, top_k: int = 3):
