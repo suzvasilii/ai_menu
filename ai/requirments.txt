@@ -6,3 +6,4 @@ faiss-cpu
 numpy
 pandas
 sentence_transformers
+python-multipart
