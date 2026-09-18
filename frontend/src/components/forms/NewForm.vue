@@ -1,6 +1,6 @@
 <template>
   <div class="input-group mb-3 inputs">
-    <p>
+    <div>
       <input
         v-model="dishName"
         type="text"
@@ -8,9 +8,6 @@
         placeholder="Добавить по названию"
         @keyup.enter="addDish"
       />
-    </p>
-
-    <p class="btn_p">
       <button
         type="button"
         class="btn btn-info"
@@ -20,18 +17,15 @@
         <span v-if="isLoading">⏳ Добавление...</span>
         <span v-else>Внести в меню</span>
       </button>
-    </p>
+    </div>
 
-    <p>
+    <div>
       <input
         type="file"
         accept="image/*"
         @change="handleFileUpload"
         class="form-control"
       />
-    </p>
-
-    <p class="btn_p">
       <button
         type="button"
         class="btn btn-warning"
@@ -41,7 +35,7 @@
         <span v-if="isLoading">⏳ Загрузка...</span>
         <span v-else>📤 Загрузить фото</span>
       </button>
-    </p>
+    </div>
   </div>
 
   <Teleport to="body">
