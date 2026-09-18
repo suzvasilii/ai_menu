@@ -4,7 +4,7 @@ from schemas.order import OrderCreate, RecommendationItem
 from repositories.order_repository import OrderRepository
 from db.models import Order
 from utils.decorators import service_handle_errors
-from services.notify_service import notify_shef
+from services.notify_service import notify_shef, notify_user
 
 
 class OrderService:
@@ -14,10 +14,9 @@ class OrderService:
     @service_handle_errors()
     def create(self, order_data: OrderCreate):
         self.repo.create(order_data)
-        try:
-            notify_shef(order_data)
-        except Exception as e:
-            print(f"Failed to notify shef: {e}")
+        user_chat_id = self.repo.get_user_chat_id(order_data.user_id)
+        notify_shef(order_data)
+        notify_user(order_data, user_chat_id)
         return {"status": 200, "detail": "order created successfully"}
 
     @service_handle_errors()

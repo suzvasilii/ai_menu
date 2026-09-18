@@ -1,4 +1,4 @@
-from db.models import Order, Dish
+from db.models import Order, Dish, User
 from schemas.order import OrderCreate
 
 
@@ -37,3 +37,7 @@ class OrderRepository:
             return self.db.query(Dish).filter(Dish.name.in_(names)).all()
         except Exception as e:
             raise RuntimeError(f"Error of getting dishes by names: {e}")
+
+    def get_user_chat_id(self, user_id: int) -> int | None:
+        user = self.db.query(User).filter(User.id == user_id).first()
+        return user.chat_id if user else None
