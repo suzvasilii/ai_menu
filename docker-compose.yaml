@@ -35,9 +35,9 @@ services:
     ports:
       - "5173:5173"
 
-  bot:
+  tg:
     build:
-      context: ./bot
+      context: ./tg
       dockerfile: Dockerfile
     container_name: tg_bot
     restart: unless-stopped
