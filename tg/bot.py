@@ -1,10 +1,9 @@
 import asyncio
 from dispatcher import dp, bot
-from handlers import auth_router, orders_router
+from handlers import auth_router
 
 async def main():
     dp.include_router(auth_router)
-    dp.include_router(orders_router)
     print("bot started...")
     await dp.start_polling(bot)
 
