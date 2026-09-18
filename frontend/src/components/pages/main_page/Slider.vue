@@ -1,5 +1,4 @@
 <template>
-  <h6 class="main_title">Приветствуем в нашем ресторане, меня зовут Арсений и я буду вашим официантом! Вы можете сделать заказ из готовых блюд или же добавить свое блюдо. Или можете просто посмотреть на мои фотки </h6>
   <div class="slider-wrapper">
     <Carousel :items-to-show="1" :wrap-around="true" :autoplay="3000">
       <Slide v-for="slide in slides" :key="slide.id">
