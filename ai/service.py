@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from semantic.vector_search import TextClassifier
 from cnn.cnn import predict_by_image
 from schemas import PromptResponse, ClassifiedResponse
-from prompts import GET_DISH_NAME_PROMPT, RETRY_GET_DISH_NAME_PROMPT
+from prompts import GET_DISH_NAME_PROMPT, RETRY_GET_DISH_NAME_PROMPT, OFFICIANT_PROMPT
 
 load_dotenv()
 
@@ -19,13 +19,20 @@ class AI_Serivce:
     def __init__(self, classifier: TextClassifier):
         self.classifier = classifier
 
-    def ask_officiant(self, request:str):
+    def ask_officiant(self, messages: list[dict]) -> PromptResponse:
         try:
             with GigaChat(
-                credentials=GIGACHAT_API_KEY,
-                model="GigaChat-2",
-                verify_ssl_certs=False
+                    credentials=GIGACHAT_API_KEY,
+                    model="GigaChat-2",
+                    verify_ssl_certs=False,
             ) as client:
+                request = {
+                    "model": "GigaChat-2",
+                    "messages": [
+                        {"role": "system", "content": OFFICIANT_PROMPT},
+                        *messages,
+                    ],
+                }
                 response = client.chat.create(request)
                 return PromptResponse(answer=response.messages[0].content[0].text)
         except Exception as e:

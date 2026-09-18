@@ -22,13 +22,18 @@ export interface ClassifiedResponse {
   category: string
 }
 
+export interface OfficiantMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 export interface OfficiantResponse {
   answer: string
 }
 
 export const aiApi = {
-  askOfficiant: async (question: string): Promise<OfficiantResponse> => {
-    const response = await api.get<OfficiantResponse>(`/ai/officiant/${question}`)
+  askOfficiant: async (messages: OfficiantMessage[]): Promise<OfficiantResponse> => {
+    const response = await api.post<OfficiantResponse>('/ai/officiant', { messages })
     return response.data
   },
 

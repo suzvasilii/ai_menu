@@ -14,3 +14,10 @@ class RetryClassifyRequest(BaseModel):
 class UpsertDishRequest(BaseModel):
     name: str
     category: str
+
+class OfficiantMessage(BaseModel):
+    role: str
+    content: str
+
+class OfficiantRequest(BaseModel):
+    messages: list[OfficiantMessage]

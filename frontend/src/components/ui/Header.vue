@@ -3,10 +3,10 @@
     <div class="header_container">
         <h1>{{ logoText }}</h1>
         <nav>
-           <router-link 
-          v-for="link in navLinks" 
+           <router-link
+          v-for="link in navLinks"
           :key="link.name"
-          :to="link.path" 
+          :to="link.path"
           class="nav-link"
           active-class="active-link"
         >
@@ -18,12 +18,17 @@
             {{ cartStore.totalItems }}
           </span>
         </router-link>
+          <button class="nav-link chat-btn" @click="isChatOpen = true">
+            Спросить у официанта
+          </button>
         </nav>
        <div>
         Hi, {{ userStore.userLogin }}
         <button @click="userStore.logout">Выйти</button>
-  </div>
+      </div>
     </div>
+
+    <OfficiantModal :is-open="isChatOpen" @close="isChatOpen = false" />
   </header>
 </template>
 
@@ -31,9 +36,12 @@
 import { ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/user'
+import OfficiantModal from "@/components/modals/OfficiantModal.vue";
 
 const userStore = useUserStore()
 const cartStore = useCartStore()
+
+const isChatOpen = ref(false)
 
 interface NavLink {
   name: string
@@ -48,8 +56,8 @@ const navLinks: NavLink[] = [
   { name: 'Создать новое меню', path: '/new' }
 ]
 </script>
-<style scoped>
 
+<style scoped>
 .main_header {
   background: #2c3e50;
   color: #fff;
@@ -68,6 +76,7 @@ const navLinks: NavLink[] = [
 nav {
   display: flex;
   gap: 32px;
+  align-items: center;
 }
 
 .nav-link {
@@ -83,6 +92,15 @@ nav {
 
 .nav-link.active-link {
   color: #42b883;
+}
+
+.chat-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .cart-link {
@@ -127,7 +145,7 @@ nav {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   nav {
     gap: 16px;
     flex-wrap: wrap;

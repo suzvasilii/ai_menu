@@ -13,12 +13,15 @@ AI_API_URL = os.getenv("AI_API_URL")
 class AI_Service:
 
     @service_handle_errors()
-    def ask_officiant(self, query):
+    def ask_officiant(self, messages: list[dict]) -> dict:
         with httpx.Client() as client:
-            response = client.get(f"{AI_API_URL}/ask_officiant/{query}")
+            response = client.post(
+                f"{AI_API_URL}/ask_officiant",
+                json={"messages": messages},
+                timeout=30.0,
+            )
             response.raise_for_status()
-            data = response.json()
-            return {"answer": data["answer"]}
+            return response.json()
 
     @service_handle_errors()
     def get_dish_name_by_str(self, dish_name: str):
