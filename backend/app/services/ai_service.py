@@ -10,6 +10,7 @@ load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
 
+
 class AI_Service:
 
     @service_handle_errors()
@@ -32,7 +33,7 @@ class AI_Service:
             llm_dish_name = data["dish_name"]
             category = data["category"]
 
-            raw_urls = find_images(llm_dish_name) or []
+            raw_urls = find_images(llm_dish_name, page=1) or []
             images = [ImageResponse(data_url=url) for url in raw_urls]
 
             return ImagesResponse(
@@ -52,7 +53,7 @@ class AI_Service:
             llm_dish_name = data["dish_name"]
             category = data["category"]
 
-            raw_urls = find_images(llm_dish_name) or []
+            raw_urls = find_images(llm_dish_name, page=1) or []
             images = [ImageResponse(data_url=url) for url in raw_urls]
 
             return ImagesResponse(
@@ -61,6 +62,18 @@ class AI_Service:
                 english_dish_name=llm_dish_name,
                 category=get_category(category),
             )
+
+    @service_handle_errors()
+    def more_photos(self, dish_name: str, english_dish_name: str, page: int):
+        raw_urls = find_images(english_dish_name, page=page) or []
+        images = [ImageResponse(data_url=url) for url in raw_urls]
+
+        return ImagesResponse(
+            images=images,
+            dish_name=dish_name,
+            english_dish_name=english_dish_name,
+            category="",   # категория не меняется — фронт её не тронет
+        )
 
     @service_handle_errors()
     def classify_by_photo(self, photo):

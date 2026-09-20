@@ -31,53 +31,25 @@
       <h5 class="card-title mb-3 mt-3">Результаты работы могут быть неточными.</h5>
       <h5 class="card-title mb-3">Если есть необходимость, отредактируйте</h5>
 
-      <div v-if="props.pageExhausted" class="alert alert-warning mt-3 mb-2">
-        Больше фотографий для этого блюда нет. Попробуйте «Повторный поиск» или введите название заново.
-      </div>
-      <div v-if="props.retryExhausted" class="alert alert-warning mb-2">
-        Не удаётся подобрать другое описание. Пожалуйста, закройте окно и введите название блюда по-другому.
-      </div>
-
       <div class="d-flex gap-2 mt-3">
-        <button
-          class="btn btn-outline-primary"
-          :disabled="props.pageExhausted"
-          @click="$emit('morePhotos')"
-        >
-          Другие фото
-        </button>
-        <button
-          class="btn btn-warning"
-          :disabled="props.retryExhausted"
-          @click="$emit('retry')"
-        >
-          Повторный поиск
-        </button>
-        <button class="btn btn-secondary" @click="$emit('cancel')">
-          Отмена
-        </button>
+        <button class="btn btn-warning" @click="$emit('retry')">Не подошло, ещё вариант</button>
+        <button class="btn btn-secondary" @click="$emit('cancel')">Отмена</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import type { DishesResponse } from '@/api/ai'
 import EditableSelect from "@/components/forms/selects/EditableSelect.vue"
 import { CATEGORIES_RU } from "@/сonstants/categories.ts"
 
-const props = defineProps<{
-  dishVar: DishesResponse
-  pageExhausted?: boolean
-  retryExhausted?: boolean
-}>()
-
+const props = defineProps<{ dishVar: DishesResponse }>()
 const emit = defineEmits<{
   (e: 'confirm', payload: DishesResponse): void
   (e: 'cancel'): void
   (e: 'retry'): void
-  (e: 'morePhotos'): void
 }>()
 
 const originalCategory = ref(props.dishVar.category)

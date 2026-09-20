@@ -6,15 +6,7 @@
 
     <div class="product-body">
       <h3 class="product-name">{{ product.name }}</h3>
-      <button
-        type="button"
-        class="btn"
-        :class="isInCart ? 'btn-success' : 'btn-info'"
-        @click="addToCart"
-        :disabled="isInCart"
-      >
-        {{ isInCart ? 'Добавлено ✓' : 'Выбрать это' }}
-      </button>
+      <button type="button" class="btn btn-info" @click="addToCart">Выбрать это</button>
       <button type="button" class="btn btn-danger" @click="deleteFromMenu">Удалить это</button>
     </div>
 
@@ -33,7 +25,6 @@ import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/user'
 import { dishesApi } from '@/api/dishes'
 import RecModal from '@/components/modals/RecModal.vue'
-import { computed } from 'vue'
 
 interface Product {
   id: number
@@ -48,10 +39,6 @@ const cartStore = useCartStore()
 const userStore = useUserStore()
 
 const isRecModalOpen = ref(false)
-
-const isInCart = computed(() =>
-  cartStore.items.some(item => item.name === props.product.name)
-)
 
 const addToCart = async () => {
   const userId = userStore.userId

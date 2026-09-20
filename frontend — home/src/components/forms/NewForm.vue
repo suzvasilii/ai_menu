@@ -62,12 +62,9 @@
             <ConfirmDish
               v-if="resultType === 'dish'"
               :dish-var="result"
-              :page-exhausted="pageExhausted"
-              :retry-exhausted="retryExhausted"
               @confirm="onConfirmDish"
               @cancel="closeModal"
               @retry="retry"
-              @more-photos="morePhotos"
             />
 
             <ConfirmClassify
@@ -109,10 +106,6 @@ const resultType = ref<'dish' | 'classify' | null>(null)
 const originalQuery = ref('')
 const attempts = ref<string[]>([])
 
-const currentPage = ref(1)
-const pageExhausted = ref(false)
-const retryExhausted = ref(false)
-
 const addDish = async () => {
   if (!dishName.value.trim()) {
     console.warn('⚠️ Поле пустое')
@@ -120,9 +113,6 @@ const addDish = async () => {
   }
   originalQuery.value = dishName.value.trim()
   attempts.value = []
-  currentPage.value = 1
-  pageExhausted.value = false
-  retryExhausted.value = false
   isLoading.value = true
   try {
     const response = await aiApi.getDishPhoto(originalQuery.value)
@@ -135,65 +125,18 @@ const addDish = async () => {
   }
 }
 
-const morePhotos = async () => {
-  if (pageExhausted.value || isLoading.value) return
-
-  const current = result.value as DishesResponse | null
-  if (!current?.english_dish_name) return
-
-  const nextPage = currentPage.value + 1
-  isLoading.value = true
-  try {
-    const response = await aiApi.morePhotos({
-      dish_name: current.dish_name,
-      english_dish_name: current.english_dish_name,
-      page: nextPage,
-    })
-
-    if (!response.images || response.images.length === 0) {
-      pageExhausted.value = true
-      return
-    }
-
-    currentPage.value = nextPage
-    result.value = {
-      ...response,
-      category: current.category,
-      selected_image: current.selected_image,
-    }
-  } catch (e) {
-    console.error(e)
-  } finally {
-    isLoading.value = false
-  }
-}
-
 const retry = async () => {
-  if (retryExhausted.value || isLoading.value) return
-
-  const current = result.value as DishesResponse | null
-  const currentEnglish = current?.english_dish_name ?? ''
-
-  if (currentEnglish && attempts.value.includes(currentEnglish)) {
-    retryExhausted.value = true
-    return
-  }
-
   isLoading.value = true
   try {
+    const current = result.value as DishesResponse | null
+    if (current?.english_dish_name) {
+      attempts.value.push(current.english_dish_name)
+    }
+
     const response = await aiApi.retryGetDishPhoto({
       dish_name: originalQuery.value,
       attempts: attempts.value,
     })
-
-    if (response.english_dish_name === currentEnglish) {
-      retryExhausted.value = true
-      return
-    }
-
-    if (currentEnglish) attempts.value.push(currentEnglish)
-    currentPage.value = 1
-    pageExhausted.value = false
     openModal(response)
   } catch (e) {
     console.error(e)
@@ -240,9 +183,6 @@ function closeModal() {
   attempts.value = []
   originalQuery.value = ''
   selectedFile.value = null
-  currentPage.value = 1
-  pageExhausted.value = false
-  retryExhausted.value = false
 }
 
 async function onConfirmDish(payload: DishesResponse) {

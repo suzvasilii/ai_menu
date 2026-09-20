@@ -6,18 +6,23 @@ from schemas.ai import (
     ClassifyResponse,
     RetryClassifyRequest,
     OfficiantRequest,
+    MorePhotosRequest,
 )
 from utils.instances import get_ai_service
+
 router = APIRouter(prefix="/ai", tags=["ai"])
+
 
 @router.post("/officiant")
 def ask(request: OfficiantRequest, service: AI_Service = Depends(get_ai_service)):
     messages = [m.model_dump() for m in request.messages]
     return service.ask_officiant(messages)
 
+
 @router.get("/get_name/{dish_name}", response_model=ImagesResponse)
 def get_name(dish_name: str, service: AI_Service = Depends(get_ai_service)):
     return service.get_dish_name_by_str(dish_name)
+
 
 @router.post("/retry_get_name", response_model=ImagesResponse)
 def retry_get_name(
@@ -25,6 +30,15 @@ def retry_get_name(
     service: AI_Service = Depends(get_ai_service),
 ):
     return service.retry_get_dish_name_by_str(request.dish_name, request.attempts)
+
+
+@router.post("/more_photos", response_model=ImagesResponse)
+def more_photos(
+    request: MorePhotosRequest,
+    service: AI_Service = Depends(get_ai_service),
+):
+    return service.more_photos(request.dish_name, request.english_dish_name, request.page)
+
 
 @router.post("/classify_photo", response_model=ClassifyResponse)
 def classify_photo(

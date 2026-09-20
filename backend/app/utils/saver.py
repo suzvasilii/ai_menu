@@ -20,11 +20,11 @@ BACKEND_URL = os.getenv("BACKEND_URL", "http://happsrv.mooo.com:8000")
 
 
 @saver_handle_errors
-def find_images(name: str) -> list[str]:
+def find_images(name: str, page: int = 1) -> list[str]:
     with httpx.Client() as client:
         search_resp = client.get(
             UNSPLASH_URL,
-            params={"query": name, "per_page": 5},
+            params={"query": name, "per_page": 5, "page": page},
             headers={"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"},
             timeout=10.0,
         )

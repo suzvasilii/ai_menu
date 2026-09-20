@@ -10,6 +10,10 @@ class BasketService:
     def _to_out(self, basket, user_id: int) -> BasketOut:
         if basket is None:
             return BasketOut(id=0, user_id=user_id, items=[])
+
+        names = [i.dish_name for i in basket.items]
+        image_by_name = self.repo.get_images_by_names(names)
+
         return BasketOut(
             id=basket.id,
             user_id=basket.user_id,
@@ -17,7 +21,7 @@ class BasketService:
                 BasketItemOut(
                     dish_name=i.dish_name,
                     quantity=i.quantity,
-                    image_url=None,
+                    image_url=image_by_name.get(i.dish_name),
                 )
                 for i in basket.items
             ],

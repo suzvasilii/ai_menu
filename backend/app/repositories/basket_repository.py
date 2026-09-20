@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
-from db.models import Basket, BasketItem
+from db.models import Basket, BasketItem, Dish
 
 from schemas.basket import BasketAdd
 
@@ -121,3 +121,9 @@ class BasketRepository:
         except Exception as e:
             self.db.rollback()
             raise RuntimeError(f"Database error, unable to clear basket: {e}")
+
+    def get_images_by_names(self, names: list[str]) -> dict[str, str]:
+        if not names:
+            return {}
+        dishes = self.db.query(Dish).filter(Dish.name.in_(names)).all()
+        return {d.name: d.image_url for d in dishes}

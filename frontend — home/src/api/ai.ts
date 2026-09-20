@@ -5,12 +5,6 @@ export interface RetryRequest {
   attempts: string[]
 }
 
-export interface MorePhotosRequest {
-  dish_name: string
-  english_dish_name: string
-  page: number
-}
-
 export interface DishResponse {
   data_url: string
 }
@@ -50,11 +44,6 @@ export const aiApi = {
 
   retryGetDishPhoto: async (request: RetryRequest): Promise<DishesResponse> => {
     const response = await api.post<DishesResponse>('/ai/retry_get_name', request)
-    return response.data
-  },
-
-  morePhotos: async (request: MorePhotosRequest): Promise<DishesResponse> => {
-    const response = await api.post<DishesResponse>('/ai/more_photos', request)
     return response.data
   },
 
