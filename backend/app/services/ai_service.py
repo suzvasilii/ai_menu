@@ -10,6 +10,29 @@ load_dotenv()
 
 AI_API_URL = os.getenv("AI_API_URL")
 
+_name_cache: dict[str, tuple[str, str]] = {}
+
+
+def _fetch_gigachat_name(dish_name: str) -> tuple[str, str]:
+    key = dish_name.strip().lower()
+
+    if key in _name_cache:
+        return _name_cache[key]
+
+    with httpx.Client() as client:
+        response = client.get(f"{AI_API_URL}/get_dish_name_by_str/{dish_name}")
+        response.raise_for_status()
+        data = response.json()
+
+    result = (data["dish_name"], data["category"])
+    _name_cache[key] = result
+    return result
+
+
+def _update_cache(dish_name: str, english_name: str, category: str) -> None:
+    key = dish_name.strip().lower()
+    _name_cache[key] = (english_name, category)
+
 
 class AI_Service:
 
@@ -26,22 +49,17 @@ class AI_Service:
 
     @service_handle_errors()
     def get_dish_name_by_str(self, dish_name: str):
-        with httpx.Client() as client:
-            response = client.get(f"{AI_API_URL}/get_dish_name_by_str/{dish_name}")
-            response.raise_for_status()
-            data = response.json()
-            llm_dish_name = data["dish_name"]
-            category = data["category"]
+        llm_dish_name, category = _fetch_gigachat_name(dish_name)
 
-            raw_urls = find_images(llm_dish_name, page=1) or []
-            images = [ImageResponse(data_url=url) for url in raw_urls]
+        raw_urls = find_images(llm_dish_name, page=1) or []
+        images = [ImageResponse(data_url=url) for url in raw_urls]
 
-            return ImagesResponse(
-                images=images,
-                dish_name=dish_name,
-                english_dish_name=llm_dish_name,
-                category=get_category(category),
-            )
+        return ImagesResponse(
+            images=images,
+            dish_name=dish_name,
+            english_dish_name=llm_dish_name,
+            category=get_category(category),
+        )
 
     @service_handle_errors()
     def retry_get_dish_name_by_str(self, dish_name: str, attempts: list[str]):
@@ -50,18 +68,21 @@ class AI_Service:
             response = client.post(f"{AI_API_URL}/retry", json=payload)
             response.raise_for_status()
             data = response.json()
-            llm_dish_name = data["dish_name"]
-            category = data["category"]
 
-            raw_urls = find_images(llm_dish_name, page=1) or []
-            images = [ImageResponse(data_url=url) for url in raw_urls]
+        llm_dish_name = data["dish_name"]
+        category = data["category"]
 
-            return ImagesResponse(
-                images=images,
-                dish_name=dish_name,
-                english_dish_name=llm_dish_name,
-                category=get_category(category),
-            )
+        _update_cache(dish_name, llm_dish_name, category)
+
+        raw_urls = find_images(llm_dish_name, page=1) or []
+        images = [ImageResponse(data_url=url) for url in raw_urls]
+
+        return ImagesResponse(
+            images=images,
+            dish_name=dish_name,
+            english_dish_name=llm_dish_name,
+            category=get_category(category),
+        )
 
     @service_handle_errors()
     def more_photos(self, dish_name: str, english_dish_name: str, page: int):
@@ -72,7 +93,7 @@ class AI_Service:
             images=images,
             dish_name=dish_name,
             english_dish_name=english_dish_name,
-            category="",   # категория не меняется — фронт её не тронет
+            category="",
         )
 
     @service_handle_errors()
