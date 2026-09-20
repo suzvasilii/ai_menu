@@ -1,27 +1,65 @@
 name,category
-apple pie,desert
-cheesecake,desert
-chocolate cake,desert
-ice cream,desert
-pancakes,desert
+apple pie,dessert
+cheesecake,dessert
+chocolate cake,dessert
+ice cream,dessert
+pancakes,dessert
+tiramisu,dessert
+waffles,dessert
 borsch,soup
 chicken noodle soup,soup
 mushroom soup,soup
 tomato soup,soup
-steak,main_dish
-grilled chicken,main_dish
-pasta carbonara,main_dish
-lasagna,main_dish
-fried rice,main_dish
+miso soup,soup
+ramen,soup
+steak,meat
+grilled chicken,meat
+beef steak,meat
+roast beef,meat
+pasta carbonara,pasta
+lasagna,pasta
+spaghetti,pasta
+fettuccine alfredo,pasta
+fried rice,rice
+rice bowl,rice
+risotto,rice
+paella,rice
 margherita,pizza
 pepperoni,pizza
 hawaiian pizza,pizza
-california roll,roll
-philadelphia roll,roll
-spicy tuna roll,roll
+four cheese pizza,pizza
+california roll,sushi
+philadelphia roll,sushi
+spicy tuna roll,sushi
+nigiri,sushi
+sashimi,sushi
+hamburger,hamburger
+cheeseburger,hamburger
+veggie burger,hamburger
+hot dog,hot_dog
+corn dog,hot_dog
+chili dog,hot_dog
+fried chicken,fried_food
+french fries,fried_food
+onion rings,fried_food
+fish and chips,fried_food
+tempura,fried_food
+salmon,seafood
+shrimp,seafood
+lobster,seafood
+grilled salmon,seafood
+oysters,seafood
+caesar salad,salad
+greek salad,salad
+caprese salad,salad
+tuna salad,salad
 soda,cold_drink
 juice,cold_drink
 ice tea,cold_drink
+lemonade,cold_drink
+smoothie,cold_drink
 coffee,hot_drink
 tea,hot_drink
 hot chocolate,hot_drink
+cappuccino,hot_drink
+latte,hot_drink
